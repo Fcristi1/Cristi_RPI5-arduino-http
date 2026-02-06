@@ -2,8 +2,8 @@
 #include <ESP8266WebServer.h>
 
 // WiFi credentials
-const char* ssid = "YOUR_SSID";
-const char* password = "YOUR_PASSWORD";
+const char* ssid = "Mimimimi1";
+const char* password = "mimimimi1";
 
 // Server on port 8080
 ESP8266WebServer server(8080);
