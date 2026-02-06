@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino D1 WiFi Control</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔌 Arduino D1 WiFi Control</h1>
+            <p class="subtitle">Raspberry Pi 5 Interface</p>
+        </header>
+
+        <main>
+            <!-- Connection Status -->
+            <section class="card status-card">
+                <h2>Connection Status</h2>
+                <div class="status-indicator">
+                    <div id="connectionDot" class="status-dot disconnected"></div>
+                    <div>
+                        <p class="status-text" id="statusText">Disconnected</p>
+                        <p class="arduino-status" id="arduinoStatus">Arduino: <span class="offline">Offline</span></p>
+                        <p class="status-info" id="statusInfo">Unable to connect to Arduino</p>
+                    </div>
+                </div>
+                <div class="status-details">
+                    <p><strong>Arduino IP:</strong> <span id="arduinoIp">-</span></p>
+                    <p><strong>Last Update:</strong> <span id="lastUpdate">-</span></p>
+                </div>
+            </section>
+
+            <!-- LED Control -->
+            <section class="card control-card">
+                <h2>LED Control</h2>
+                <div class="led-display">
+                    <div id="ledIndicator" class="led-off"></div>
+                    <p id="ledStatus">LED: OFF</p>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="ledOn()">Turn ON</button>
+                    <button class="btn btn-danger" onclick="ledOff()">Turn OFF</button>
+                    <button class="btn btn-secondary" onclick="ledToggle()">Toggle</button>
+                </div>
+            </section>
+
+            <!-- Button Input -->
+            <section class="card input-card">
+                <h2>Button Input</h2>
+                <div class="button-display">
+                    <div id="buttonIndicator" class="button-released"></div>
+                    <p id="buttonStatus">Button: RELEASED</p>
+                </div>
+                <p class="info-text">Check button state in real-time</p>
+            </section>
+
+            <!-- Settings -->
+            <section class="card settings-card">
+                <h2>Settings</h2>
+                <div class="setting-group">
+                    <label for="arduinoIpInput">Arduino IP Address:</label>
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="arduinoIpInput" 
+                            placeholder="192.168.1.100"
+                            class="input-field"
+                        >
+                        <button class="btn btn-small" onclick="updateArduinoIp()">Update</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>RPI5 Web Interface · Arduino D1 WiFi Module</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
