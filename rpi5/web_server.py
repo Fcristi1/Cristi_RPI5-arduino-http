@@ -24,6 +24,7 @@ REQUEST_TIMEOUT = 5
 # Global status
 current_status = {
     "led": "OFF",
+    "builtin_led": "OFF",
     "button": "RELEASED",
     "ip": "Unknown",
     "connected": False,
@@ -42,6 +43,7 @@ def get_arduino_status():
             data = response.json()
             current_status.update({
                 "led": data.get("led", "OFF"),
+                "builtin_led": data.get("builtin_led", "OFF"),
                 "button": data.get("button", "RELEASED"),
                 "ip": data.get("ip", "Unknown"),
                 "connected": True,
@@ -148,6 +150,54 @@ def api_led_toggle():
         if response.status_code == 200:
             get_arduino_status()
             return jsonify({"status": "success", "action": "LED toggled"})
+        else:
+            return jsonify({"status": "error", "message": "Arduino returned error"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/builtin/on', methods=['POST'])
+def api_builtin_on():
+    """API endpoint: turn built-in LED on"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_BASE_URL}/builtin/on",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            get_arduino_status()
+            return jsonify({"status": "success", "action": "Built-in LED turned ON"})
+        else:
+            return jsonify({"status": "error", "message": "Arduino returned error"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/builtin/off', methods=['POST'])
+def api_builtin_off():
+    """API endpoint: turn built-in LED off"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_BASE_URL}/builtin/off",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            get_arduino_status()
+            return jsonify({"status": "success", "action": "Built-in LED turned OFF"})
+        else:
+            return jsonify({"status": "error", "message": "Arduino returned error"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/builtin/toggle', methods=['POST'])
+def api_builtin_toggle():
+    """API endpoint: toggle built-in LED"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_BASE_URL}/builtin/toggle",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            get_arduino_status()
+            return jsonify({"status": "success", "action": "Built-in LED toggled"})
         else:
             return jsonify({"status": "error", "message": "Arduino returned error"}), 500
     except Exception as e:

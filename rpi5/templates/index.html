@@ -45,6 +45,20 @@
                 </div>
             </section>
 
+            <!-- Built-in LED Control -->
+            <section class="card control-card">
+                <h2>Built-in LED Control</h2>
+                <div class="led-display">
+                    <div id="builtinLedIndicator" class="led-off"></div>
+                    <p id="builtinLedStatus">Built-in LED: OFF</p>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="builtinLedOn()">Turn ON</button>
+                    <button class="btn btn-danger" onclick="builtinLedOff()">Turn OFF</button>
+                    <button class="btn btn-secondary" onclick="builtinLedToggle()">Toggle</button>
+                </div>
+            </section>
+
             <!-- Button Input -->
             <section class="card input-card">
                 <h2>Button Input</h2>

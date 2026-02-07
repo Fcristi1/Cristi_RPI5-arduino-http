@@ -1,6 +1,7 @@
 // Global state
 let currentStatus = {
     led: 'OFF',
+    builtin_led: 'OFF',
     button: 'RELEASED',
     ip: 'Unknown',
     connected: false,
@@ -75,6 +76,18 @@ function updateUI() {
     } else {
         buttonIndicator.className = 'button-released';
         buttonStatus.textContent = 'Button: RELEASED';
+    }
+
+    // Update built-in LED display
+    const builtinLedIndicator = document.getElementById('builtinLedIndicator');
+    const builtinLedStatus = document.getElementById('builtinLedStatus');
+
+    if (currentStatus.builtin_led === 'ON') {
+        builtinLedIndicator.className = 'led-on';
+        builtinLedStatus.textContent = 'Built-in LED: ON';
+    } else {
+        builtinLedIndicator.className = 'led-off';
+        builtinLedStatus.textContent = 'Built-in LED: OFF';
     }
     
     // Update Arduino IP display
@@ -171,6 +184,72 @@ function ledToggle() {
         .catch(error => {
             console.error('Error:', error);
             showNotification('Failed to toggle LED', 'error');
+        });
+}
+
+/**
+ * Built-in LED Control - Turn ON
+ */
+function builtinLedOn() {
+    if (!currentStatus.connected) {
+        showNotification('Arduino not connected', 'error');
+        return;
+    }
+
+    fetch('/api/builtin/on', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Built-in LED On:', data);
+            updateStatus();
+            showNotification('Built-in LED turned ON', 'success');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to turn built-in LED on', 'error');
+        });
+}
+
+/**
+ * Built-in LED Control - Turn OFF
+ */
+function builtinLedOff() {
+    if (!currentStatus.connected) {
+        showNotification('Arduino not connected', 'error');
+        return;
+    }
+
+    fetch('/api/builtin/off', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Built-in LED Off:', data);
+            updateStatus();
+            showNotification('Built-in LED turned OFF', 'success');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to turn built-in LED off', 'error');
+        });
+}
+
+/**
+ * Built-in LED Control - Toggle
+ */
+function builtinLedToggle() {
+    if (!currentStatus.connected) {
+        showNotification('Arduino not connected', 'error');
+        return;
+    }
+
+    fetch('/api/builtin/toggle', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Built-in LED Toggled:', data);
+            updateStatus();
+            showNotification(data.action || 'Built-in LED toggled', 'success');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to toggle built-in LED', 'error');
         });
 }
 
