@@ -16,7 +16,7 @@ import os
 app = Flask(__name__)
 
 # Arduino configuration
-ARDUINO_IP = "192.168.1.100"
+ARDUINO_IP = "192.168.0.37"
 ARDUINO_PORT = 8080
 ARDUINO_BASE_URL = f"http://{ARDUINO_IP}:{ARDUINO_PORT}"
 REQUEST_TIMEOUT = 5
