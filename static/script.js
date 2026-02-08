@@ -92,6 +92,15 @@ function toggleArduino1LED() {
         });
 }
 
+function toggleArduino3LED() {
+    const message = new Paho.MQTT.Message("TOGGLE_LED");
+    message.destinationName = "arduino3/command";
+    mqttClient.send(message);
+}
+
+// Connect to MQTT broker on page load
+connectMQTT();
+
 // Fetch initial details and set interval for updates
 fetchD1Details();
 fetchNodeMCUDetails();
@@ -155,3 +164,42 @@ async function fetchTemperature() {
 setInterval(fetchSensorData, 5000); // Update sensor data every 5 seconds
 setInterval(fetchStatus, 5000); // Update status every 5 seconds
 setInterval(fetchTemperature, 5000); // Update temperature every 5 seconds
+
+const mqttBroker = "ws://192.168.0.100:9001"; // Replace with your MQTT broker WebSocket URL
+const mqttClient = new Paho.MQTT.Client(mqttBroker, "web_client");
+
+mqttClient.onConnectionLost = (responseObject) => {
+    console.error("Connection lost:", responseObject.errorMessage);
+};
+
+mqttClient.onMessageArrived = (message) => {
+    console.log("Message arrived:", message.payloadString);
+    const topic = message.destinationName;
+    const payload = JSON.parse(message.payloadString);
+
+    if (topic === "arduino1/sensor") {
+        document.getElementById('arduino1-status').innerText = 'Connected';
+        document.getElementById('arduino1-temp').innerText = payload.temperature || '-';
+        document.getElementById('arduino1-humidity').innerText = payload.humidity || '-';
+    } else if (topic === "arduino3/status") {
+        document.getElementById('arduino3-status').innerText = payload.connected ? 'Connected' : 'Disconnected';
+        document.getElementById('arduino3-relay0').innerText = payload.relay0 || 'OFF';
+        document.getElementById('arduino3-relay1').innerText = payload.relay1 || 'OFF';
+    }
+};
+
+function connectMQTT() {
+    mqttClient.connect({
+        onSuccess: () => {
+            console.log("Connected to MQTT broker");
+            mqttClient.subscribe("arduino1/sensor");
+            mqttClient.subscribe("arduino3/status");
+        },
+        onFailure: (error) => {
+            console.error("Failed to connect to MQTT broker:", error);
+        }
+    });
+}
+
+// Connect to MQTT broker on page load
+connectMQTT();
