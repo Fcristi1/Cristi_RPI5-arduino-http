@@ -23,7 +23,7 @@ void setup() {
 
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUILTIN_LED_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP); // Enable internal pull-up resistor for button
 
   digitalWrite(LED_PIN, LOW);
   digitalWrite(BUILTIN_LED_PIN, HIGH); // Off by default (active LOW)
@@ -45,10 +45,14 @@ void setup() {
 void loop() {
   server.handleClient();
 
-  // Optional: Print button state
+  // Button debounce logic
+  static unsigned long lastPress = 0;
   if (digitalRead(BUTTON_PIN) == LOW) {
-    Serial.println("Button pressed!");
-    delay(200);
+    unsigned long currentTime = millis();
+    if (currentTime - lastPress > 200) { // 200ms debounce
+      Serial.println("Button pressed!");
+      lastPress = currentTime;
+    }
   }
 }
 
