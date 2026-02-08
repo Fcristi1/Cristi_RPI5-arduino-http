@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Control Interface</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Arduino Control Interface</h1>
+
+    <section id="arduino1">
+        <h2>Arduino 1 (D1 ESP8266)</h2>
+        <p>Status: <span id="arduino1-status">Disconnected</span></p>
+        <p>Temperature: <span id="arduino1-temp">-</span> °C</p>
+        <p>Humidity: <span id="arduino1-humidity">-</span> %</p>
+        <button onclick="toggleArduino1Pin(1, 'high')">Set Pin HIGH</button>
+        <button onclick="toggleArduino1Pin(1, 'low')">Set Pin LOW</button>
+    </section>
+
+    <section id="arduino3">
+        <h2>Arduino 3 (NodeMCU ESP8266)</h2>
+        <p>Status: <span id="arduino3-status">Disconnected</span></p>
+        <button onclick="toggleArduino3Pin(1, 'high')">Set Pin D1 HIGH</button>
+        <button onclick="toggleArduino3Pin(1, 'low')">Set Pin D1 LOW</button>
+        <button onclick="toggleArduino3Pin(2, 'high')">Set Pin D2 HIGH</button>
+        <button onclick="toggleArduino3Pin(2, 'low')">Set Pin D2 LOW</button>
+    </section>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

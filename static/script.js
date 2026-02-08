@@ -157,10 +157,51 @@ async function fetchTemperature() {
     }
 }
 
+async function fetchArduino1SensorData() {
+    try {
+        const response = await fetch('/api/arduino1/sensor');
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('arduino1-status').innerText = 'Connected';
+            document.getElementById('arduino1-temp').innerText = data.temperature || '-';
+            document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
+        } else {
+            document.getElementById('arduino1-status').innerText = 'Disconnected';
+        }
+    } catch (error) {
+        document.getElementById('arduino1-status').innerText = 'Disconnected';
+    }
+}
+
+async function toggleArduino1Pin(pin, state) {
+    try {
+        await fetch('/api/arduino1/control', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin, state })
+        });
+    } catch (error) {
+        console.error('Failed to toggle Arduino 1 pin:', error);
+    }
+}
+
+async function toggleArduino3Pin(pin, state) {
+    try {
+        await fetch('/api/arduino3/control', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin, state })
+        });
+    } catch (error) {
+        console.error('Failed to toggle Arduino 3 pin:', error);
+    }
+}
+
 // Call fetchSensorData and fetchStatus periodically to update the values
 setInterval(fetchSensorData, 5000); // Update sensor data every 5 seconds
 setInterval(fetchStatus, 5000); // Update status every 5 seconds
 setInterval(fetchTemperature, 5000); // Update temperature every 5 seconds
+setInterval(fetchArduino1SensorData, 5000); // Update Arduino 1 sensor data every 5 seconds
 
 const mqttBroker = "ws://192.168.0.100:9001"; // Replace with your MQTT broker WebSocket URL
 const mqttClient = new Paho.MQTT.Client(mqttBroker, "web_client");
