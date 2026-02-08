@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RPI5 Web Interface for Arduino D1 WiFi Control
+RPI5 Web Interface for Arduino Devices
 Flask-based web interface accessible from PC browser
 Run on RPI5: python3 rpi5/web_server.py
 Access from PC: http://<RPI5_IP>:5000
@@ -15,10 +15,14 @@ import os
 
 app = Flask(__name__)
 
-# Arduino configuration
-ARDUINO_IP = "192.168.0.37"
+# Arduino configuration for renamed folders
+ARDUINO_1_IP = "192.168.0.37"  # Arduino 1 (D1 ESP8266)
+ARDUINO_3_IP = "192.168.0.161"  # Arduino 3 (NodeMCU ESP8266)
+
 ARDUINO_PORT = 8080
-ARDUINO_BASE_URL = f"http://{ARDUINO_IP}:{ARDUINO_PORT}"
+
+ARDUINO_1_BASE_URL = f"http://{ARDUINO_1_IP}:{ARDUINO_PORT}"
+ARDUINO_3_BASE_URL = f"http://{ARDUINO_3_IP}:{ARDUINO_PORT}"
 REQUEST_TIMEOUT = 5
 
 # Global status
@@ -36,7 +40,7 @@ def get_arduino_status():
     global current_status
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/status",
+            f"{ARDUINO_1_BASE_URL}/status",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -112,7 +116,7 @@ def api_led_on():
     """API endpoint: turn LED on"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/led/on",
+            f"{ARDUINO_1_BASE_URL}/led/on",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -128,7 +132,7 @@ def api_led_off():
     """API endpoint: turn LED off"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/led/off",
+            f"{ARDUINO_1_BASE_URL}/led/off",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -144,7 +148,7 @@ def api_led_toggle():
     """API endpoint: toggle LED"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/led/toggle",
+            f"{ARDUINO_1_BASE_URL}/led/toggle",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -160,7 +164,7 @@ def api_builtin_on():
     """API endpoint: turn built-in LED on"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/builtin/on",
+            f"{ARDUINO_1_BASE_URL}/builtin/on",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -176,7 +180,7 @@ def api_builtin_off():
     """API endpoint: turn built-in LED off"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/builtin/off",
+            f"{ARDUINO_1_BASE_URL}/builtin/off",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -192,7 +196,7 @@ def api_builtin_toggle():
     """API endpoint: toggle built-in LED"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/builtin/toggle",
+            f"{ARDUINO_1_BASE_URL}/builtin/toggle",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -208,7 +212,7 @@ def api_sensor():
     """API endpoint: get temperature and humidity from Arduino"""
     try:
         response = requests.get(
-            f"{ARDUINO_BASE_URL}/sensor",
+            f"{ARDUINO_1_BASE_URL}/sensor",
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
@@ -218,15 +222,27 @@ def api_sensor():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/d1/status', methods=['GET'])
+def d1_status():
+    """API endpoint: Get status from Arduino D1"""
+    try:
+        response = requests.get(f"{ARDUINO_1_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return response.json(), 200
+        else:
+            return jsonify({"error": "Failed to fetch status from Arduino D1"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/nodemcu/status', methods=['GET'])
 def nodemcu_status():
-    """API endpoint: Get NodeMCU channel statuses"""
+    """API endpoint: Get status from NodeMCU"""
     try:
-        response = requests.get(f"{ARDUINO_BASE_URL}/", timeout=REQUEST_TIMEOUT)
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/", timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
             return response.text, 200  # Return HTML response
         else:
-            return jsonify({"error": "Failed to fetch status"}), response.status_code
+            return jsonify({"error": "Failed to fetch status from NodeMCU"}), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

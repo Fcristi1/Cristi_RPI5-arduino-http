@@ -1,14 +1,28 @@
-async function fetchStatus() {
+async function fetchD1Status() {
+    try {
+        const response = await fetch('/api/d1/status');
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('d1-status').innerHTML = JSON.stringify(data, null, 2);
+        } else {
+            document.getElementById('d1-status').innerHTML = 'Error fetching Arduino D1 status';
+        }
+    } catch (error) {
+        document.getElementById('d1-status').innerHTML = 'Connection error';
+    }
+}
+
+async function fetchNodeMCUStatus() {
     try {
         const response = await fetch('/api/nodemcu/status');
         if (response.ok) {
             const text = await response.text();
-            document.getElementById('mcu-status').innerHTML = text;
+            document.getElementById('nodemcu-status').innerHTML = text;
         } else {
-            document.getElementById('mcu-status').innerHTML = 'Error fetching status';
+            document.getElementById('nodemcu-status').innerHTML = 'Error fetching NodeMCU status';
         }
     } catch (error) {
-        document.getElementById('mcu-status').innerHTML = 'Connection error';
+        document.getElementById('nodemcu-status').innerHTML = 'Connection error';
     }
 }
 
@@ -45,7 +59,8 @@ async function toggleChannel(channel) {
     }
 }
 
-// Fetch initial status and set interval for updates
-fetchStatus();
-updateRelayStatus();
-setInterval(updateRelayStatus, 5000);
+// Fetch initial statuses and set interval for updates
+fetchD1Status();
+fetchNodeMCUStatus();
+setInterval(fetchD1Status, 5000);
+setInterval(fetchNodeMCUStatus, 5000);

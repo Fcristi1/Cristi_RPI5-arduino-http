@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RPI5 HTTP Client for Arduino D1 WiFi Communication
+RPI5 HTTP Client for Arduino Devices
 """
 
 import requests

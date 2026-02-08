@@ -13,6 +13,10 @@ ESP8266WebServer server(80);
 bool channel1Status = false;
 bool channel2Status = false;
 
+// Define relay pins
+const int relay1Pin = D0;
+const int relay2Pin = D1;
+
 // Function to handle root endpoint
 void handleRoot() {
   String message = "<html><body><h1>NodeMCU Status</h1>";
@@ -27,12 +31,14 @@ void handleRoot() {
 // Function to toggle channel 1
 void toggleChannel1() {
   channel1Status = !channel1Status;
+  digitalWrite(relay1Pin, channel1Status ? HIGH : LOW);
   server.send(200, "text/plain", channel1Status ? "Channel 1 ON" : "Channel 1 OFF");
 }
 
 // Function to toggle channel 2
 void toggleChannel2() {
   channel2Status = !channel2Status;
+  digitalWrite(relay2Pin, channel2Status ? HIGH : LOW);
   server.send(200, "text/plain", channel2Status ? "Channel 2 ON" : "Channel 2 OFF");
 }
 
@@ -51,6 +57,12 @@ void setup() {
 
   // Print the IP address
   Serial.println(WiFi.localIP());
+
+  // Initialize relay pins
+  pinMode(relay1Pin, OUTPUT);
+  pinMode(relay2Pin, OUTPUT);
+  digitalWrite(relay1Pin, LOW);
+  digitalWrite(relay2Pin, LOW);
 
   // Define server routes
   server.on("/", handleRoot);
