@@ -203,6 +203,21 @@ def api_builtin_toggle():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/sensor', methods=['GET'])
+def api_sensor():
+    """API endpoint: get temperature and humidity from Arduino"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_BASE_URL}/sensor",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"status": "error", "message": "Arduino returned error"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     """Handle 404 errors"""

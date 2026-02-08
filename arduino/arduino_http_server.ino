@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <DHT.h>
 
 // WiFi credentials
 const char* ssid = "Mimimimi1";
@@ -12,6 +13,9 @@ ESP8266WebServer server(8080);
 const int LED_PIN = D0;  // GPIO16 - External LED
 const int BUILTIN_LED_PIN = D4;  // GPIO2 - On-board LED (active LOW)
 const int BUTTON_PIN = D1;  // GPIO5
+const int DHTPIN = D2;  // Pin connected to the DHT sensor
+const int DHTTYPE = DHT11;
+DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(115200);
@@ -26,6 +30,9 @@ void setup() {
 
   // Connect to WiFi
   connectToWiFi();
+
+  // Initialize DHT sensor
+  dht.begin();
 
   // Define HTTP routes
   setupRoutes();
@@ -132,6 +139,25 @@ void setupRoutes() {
     String response = "{\"status\":\"Built-in LED toggled to ";
     response += state;
     response += "\"}";
+    server.send(200, "application/json", response);
+  });
+
+  // GET /sensor - returns temperature and humidity
+  server.on("/sensor", HTTP_GET, []() {
+    float temperature = dht.readTemperature();
+    float humidity = dht.readHumidity();
+
+    if (isnan(temperature) || isnan(humidity)) {
+      server.send(500, "application/json", "{\"error\":\"Failed to read from DHT sensor\"}");
+      return;
+    }
+
+    String response = "{\"temperature\":";
+    response += temperature;
+    response += ",\"humidity\":";
+    response += humidity;
+    response += "}";
+
     server.send(200, "application/json", response);
   });
 
