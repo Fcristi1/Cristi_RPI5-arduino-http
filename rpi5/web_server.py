@@ -300,6 +300,22 @@ def api_sensor():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/temperature', methods=['GET'])
+def api_temperature():
+    """API endpoint: get temperature from Arduino"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_1_BASE_URL}/sensor",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            data = response.json()
+            return jsonify({"temperature": data.get("temperature", "N/A")})
+        else:
+            return jsonify({"status": "error", "message": "Arduino returned error"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/api/d1/status', methods=['GET'])
 def d1_status():
     """API endpoint: Get status from Arduino D1"""

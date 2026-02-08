@@ -133,6 +133,21 @@ async function fetchStatus() {
     }
 }
 
+async function fetchTemperature() {
+    try {
+        const response = await fetch('/api/temperature'); // Fetch temperature data
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('arduino1-temp').innerText = data.temperature ? `${data.temperature} °C` : '-';
+        } else {
+            document.getElementById('arduino1-temp').innerText = 'Error';
+        }
+    } catch (error) {
+        document.getElementById('arduino1-temp').innerText = 'Connection error';
+    }
+}
+
 // Call fetchSensorData and fetchStatus periodically to update the values
 setInterval(fetchSensorData, 5000); // Update sensor data every 5 seconds
 setInterval(fetchStatus, 5000); // Update status every 5 seconds
+setInterval(fetchTemperature, 5000); // Update temperature every 5 seconds
