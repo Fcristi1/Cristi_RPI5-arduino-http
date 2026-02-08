@@ -64,8 +64,6 @@
         const statusResponse = await fetch('http://192.168.0.162/status');
         const mhDigitalResponse = await fetch('http://192.168.0.162/mh/digital');
         const mhAnalogResponse = await fetch('http://192.168.0.162/mh/analog');
-        const relay1Response = await fetch('http://192.168.0.162/relay1/on');
-        const relay2Response = await fetch('http://192.168.0.162/relay2/on');
 
         const statusData = await statusResponse.json();
         const mhDigitalData = await mhDigitalResponse.json();
@@ -75,10 +73,11 @@
         document.getElementById('arduino3-led').textContent = statusData.builtin_led;
         document.getElementById('arduino3-mh-digital').textContent = mhDigitalData.digital;
         document.getElementById('arduino3-mh-analog').textContent = mhAnalogData.analog;
-        document.getElementById('arduino3-relay1').textContent = 'ON';
-        document.getElementById('arduino3-relay2').textContent = 'ON';
       } catch (error) {
         document.getElementById('arduino3-status').textContent = 'Disconnected';
+        document.getElementById('arduino3-led').textContent = 'N/A';
+        document.getElementById('arduino3-mh-digital').textContent = 'N/A';
+        document.getElementById('arduino3-mh-analog').textContent = 'N/A';
       }
     }
 
