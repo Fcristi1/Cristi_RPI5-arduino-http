@@ -120,6 +120,12 @@ void readMHSensorAnalog() {
   server.send(200, "application/json", response);
 }
 
+// Function to log requests
+void logRequest(String endpoint) {
+  Serial.print("Received request for endpoint: ");
+  Serial.println(endpoint);
+}
+
 void setup() {
   // Start serial communication
   Serial.begin(115200);
@@ -154,16 +160,28 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/toggleChannel1", toggleChannel1);
   server.on("/toggleChannel2", toggleChannel2);
-  server.on("/status", handleStatus);
+  server.on("/status", HTTP_GET, []() {
+    logRequest("/status");
+    handleStatus();
+  });
   server.on("/builtin/on", turnBuiltinLedOn);
   server.on("/builtin/off", turnBuiltinLedOff);
-  server.on("/builtin/toggle", toggleBuiltinLed);
+  server.on("/builtin/toggle", HTTP_GET, []() {
+    logRequest("/builtin/toggle");
+    toggleBuiltinLed();
+  });
   server.on("/relay1/on", turnRelay1On);
   server.on("/relay1/off", turnRelay1Off);
   server.on("/relay2/on", turnRelay2On);
   server.on("/relay2/off", turnRelay2Off);
-  server.on("/mh/digital", readMHSensorDigital);
-  server.on("/mh/analog", readMHSensorAnalog);
+  server.on("/mh/digital", HTTP_GET, []() {
+    logRequest("/mh/digital");
+    readMHSensorDigital();
+  });
+  server.on("/mh/analog", HTTP_GET, []() {
+    logRequest("/mh/analog");
+    readMHSensorAnalog();
+  });
 
   // Start the server
   server.begin();
