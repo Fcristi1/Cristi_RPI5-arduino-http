@@ -73,6 +73,20 @@ def continuous_status_update():
 status_thread = threading.Thread(target=continuous_status_update, daemon=True)
 status_thread.start()
 
+def get_nodemcu_status():
+    """Fetch status from Arduino NodeMCU"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_3_BASE_URL}/status",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            return response.text  # Assuming NodeMCU returns HTML
+        else:
+            return "Error fetching NodeMCU status"
+    except Exception as e:
+        return f"Error: {e}"
+
 @app.route('/')
 def index():
     """Serve main page"""
@@ -235,16 +249,9 @@ def d1_status():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/nodemcu/status', methods=['GET'])
-def nodemcu_status():
-    """API endpoint: Get status from NodeMCU"""
-    try:
-        response = requests.get(f"{ARDUINO_3_BASE_URL}/", timeout=REQUEST_TIMEOUT)
-        if response.status_code == 200:
-            return response.text, 200  # Return HTML response
-        else:
-            return jsonify({"error": "Failed to fetch status from NodeMCU"}), response.status_code
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+def api_nodemcu_status():
+    """API endpoint to get NodeMCU status"""
+    return get_nodemcu_status()
 
 @app.route('/api/nodemcu/toggle/<int:channel>', methods=['POST'])
 def toggle_channel(channel):
