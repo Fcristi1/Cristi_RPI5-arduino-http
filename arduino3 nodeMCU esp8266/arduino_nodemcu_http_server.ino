@@ -6,12 +6,8 @@
 const char* ssid = "Mimi";
 const char* password = "mimimimi1";
 
-// HTTP server
+// Create an instance of the web server
 ESP8266WebServer server(80);
-
-// Pin configuration
-const int controlPin1 = D1; // Example pin 1 to control
-const int controlPin2 = D2; // Example pin 2 to control
 
 // Variables to store channel statuses
 bool channel1Status = false;
@@ -187,9 +183,6 @@ void setup() {
     readMHSensorAnalog();
   });
 
-  // Control endpoint
-  server.on("/control", HTTP_GET, handleControl);
-
   // Start the server
   server.begin();
   Serial.println("HTTP server started");
@@ -198,31 +191,4 @@ void setup() {
 void loop() {
   // Handle client requests
   server.handleClient();
-}
-
-void handleControl() {
-  if (!server.hasArg("pin") || !server.hasArg("state")) {
-    server.send(400, "application/json", "{\"error\":\"Missing parameters\"}");
-    return;
-  }
-
-  int pin = server.arg("pin").toInt();
-  String state = server.arg("state");
-
-  if (pin != controlPin1 && pin != controlPin2) {
-    server.send(400, "application/json", "{\"error\":\"Invalid pin\"}");
-    return;
-  }
-
-  if (state == "high") {
-    digitalWrite(pin, HIGH);
-  } else if (state == "low") {
-    digitalWrite(pin, LOW);
-  } else {
-    server.send(400, "application/json", "{\"error\":\"Invalid state\"}");
-    return;
-  }
-
-  String json = "{\"pin\":" + String(pin) + ",\"state\":\"" + state + "\"}";
-  server.send(200, "application/json", json);
 }

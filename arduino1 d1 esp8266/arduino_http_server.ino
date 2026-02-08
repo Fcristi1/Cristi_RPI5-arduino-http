@@ -6,12 +6,7 @@
 const char* ssid = "Mimi";
 const char* password = "mimimimi1";
 
-// DHT sensor configuration
-#define DHTPIN D11
-#define DHTTYPE DHT11
-DHT dht(DHTPIN, DHTTYPE);
-
-// HTTP server
+// Server on port 8080
 ESP8266WebServer server(8080);
 
 // Pin configuration

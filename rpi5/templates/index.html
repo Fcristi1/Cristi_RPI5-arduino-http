@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Control - Arduino 1 & 3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Arduino Control Interface</h1>
+            <p>Manage Arduino 1 (D1) and Arduino 3 (NodeMCU)</p>
+        </header>
+
+        <main>
+            <!-- Arduino 1 (D1 ESP8266) Section -->
+            <section class="card">
+                <h2>Arduino 1 (D1 ESP8266) - 192.168.0.37</h2>
+                <p><strong>Status:</strong> <span id="arduino1Status">Disconnected</span></p>
+                <p><strong>Inner LED:</strong> <span id="arduino1LedStatus">OFF</span></p>
+                <button onclick="toggleArduino1Led()">Toggle Inner LED</button>
+                <p><strong>Temperature:</strong> <span id="arduino1Temperature">-</span> °C</p>
+                <p><strong>Humidity:</strong> <span id="arduino1Humidity">-</span> %</p>
+            </section>
+
+            <!-- Arduino 3 (NodeMCU ESP8266) Section -->
+            <section class="card">
+                <h2>Arduino 3 (NodeMCU ESP8266) - 192.168.0.161</h2>
+                <p><strong>Status:</strong> <span id="arduino3Status">Disconnected</span></p>
+                <p><strong>Inner LED:</strong> <span id="arduino3LedStatus">OFF</span></p>
+                <button onclick="toggleArduino3Led()">Toggle Inner LED</button>
+                <p><strong>Relay D0:</strong> <span id="relayD0Status">OFF</span></p>
+                <p><strong>Relay D1:</strong> <span id="relayD1Status">OFF</span></p>
+            </section>
+        </main>
+
+        <footer>
+            <p>RPI5 Web Interface · Arduino D1 WiFi Module</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
