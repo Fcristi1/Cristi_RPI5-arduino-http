@@ -171,6 +171,13 @@ void setupRoutes() {
     server.send(200, "application/json", response);
   });
 
+  // GET /button - returns the current button state
+  server.on("/button", HTTP_GET, []() {
+    String buttonState = digitalRead(BUTTON_PIN) == LOW ? "PRESSED" : "RELEASED";
+    String response = "{\"button\":\"" + buttonState + "\"}";
+    server.send(200, "application/json", response);
+  });
+
   // Handle 404
   server.onNotFound([]() {
     server.send(404, "application/json", "{\"error\":\"Not Found\"}");
