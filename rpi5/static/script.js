@@ -8,6 +8,13 @@ let currentStatus = {
     last_update: null
 };
 
+// Global state for Arduino 3
+let arduino3Status = {
+    connected: false,
+    ip: 'Unknown',
+    last_update: null
+};
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Initializing Arduino D1 Control Interface...');
@@ -324,6 +331,38 @@ function updateSensorData() {
 
 // Update sensor data every 2 seconds
 setInterval(updateSensorData, 2000);
+
+/**
+ * Update Arduino 3 status from server
+ */
+function updateArduino3Status() {
+    fetch('/api/nodemcu/status')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            arduino3Status = data;
+            updateArduino3UI();
+        })
+        .catch(error => {
+            console.error('Error fetching Arduino 3 status:', error);
+            document.getElementById('arduino3Connection').innerText = 'Disconnected';
+            document.getElementById('arduino3Ip').innerText = '-';
+            document.getElementById('arduino3LastUpdate').innerText = '-';
+        });
+}
+
+/**
+ * Update UI elements with Arduino 3 status
+ */
+function updateArduino3UI() {
+    document.getElementById('arduino3Connection').innerText = arduino3Status.connected ? 'Connected' : 'Disconnected';
+    document.getElementById('arduino3Ip').innerText = arduino3Status.ip || '-';
+    document.getElementById('arduino3LastUpdate').innerText = arduino3Status.last_update || '-';
+}
 
 /**
  * Show notification (simple version)
