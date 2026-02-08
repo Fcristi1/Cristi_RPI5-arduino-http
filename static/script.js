@@ -97,3 +97,25 @@ fetchD1Details();
 fetchNodeMCUDetails();
 setInterval(fetchD1Details, 5000);
 setInterval(fetchNodeMCUDetails, 5000);
+
+async function fetchSensorData() {
+    try {
+        const response = await fetch('http://192.168.0.37:8080/sensor'); // Fetch sensor data
+        if (response.ok) {
+            const data = await response.json();
+
+            // Update temperature and humidity fields
+            document.getElementById('arduino1-temp').innerText = data.temperature || '-';
+            document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
+        } else {
+            document.getElementById('arduino1-temp').innerText = 'Error';
+            document.getElementById('arduino1-humidity').innerText = 'Error';
+        }
+    } catch (error) {
+        document.getElementById('arduino1-temp').innerText = 'Connection error';
+        document.getElementById('arduino1-humidity').innerText = 'Connection error';
+    }
+}
+
+// Call fetchSensorData periodically to update the values
+setInterval(fetchSensorData, 5000); // Update every 5 seconds

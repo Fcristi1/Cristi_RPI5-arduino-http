@@ -102,6 +102,17 @@ void setupRoutes() {
     float temperature = dht.readTemperature() + TEMP_OFFSET;
     float humidity = dht.readHumidity() + HUMIDITY_OFFSET;
 
+    if (isnan(temperature) || isnan(humidity)) {
+      Serial.println("[ERROR] Failed to read from DHT sensor");
+    } else {
+      Serial.print("[INFO] Temperature: ");
+      Serial.print(temperature);
+      Serial.println(" °C");
+      Serial.print("[INFO] Humidity: ");
+      Serial.print(humidity);
+      Serial.println(" %");
+    }
+
     String response = "{\"led\":\"";
     response += ledState;
     response += "\",\"button\":\"";
