@@ -11,7 +11,8 @@ ESP8266WebServer server(8080);
 
 // Pin configuration
 const int LED_PIN = D0;  // GPIO16 - External LED
-const int BUILTIN_LED_PIN = D4;  // GPIO2 - On-board LED (active LOW)
+// Use the predefined LED_BUILTIN macro for the built-in LED
+const int BUILTIN_LED_PIN = LED_BUILTIN;  // Ensures compatibility with the board
 const int BUTTON_PIN = D1;  // GPIO5
 const int DHTPIN = D11;  // Pin connected to the DHT sensor
 const int DHTTYPE = DHT11;
@@ -22,7 +23,7 @@ void setup() {
   delay(100);
 
   pinMode(LED_PIN, OUTPUT);
-  pinMode(BUILTIN_LED_PIN, OUTPUT); // Ensure pin mode is set for built-in LED
+  pinMode(BUILTIN_LED_PIN, OUTPUT); // Initialize the built-in LED as an output
 
   // Test the built-in LED
   digitalWrite(BUILTIN_LED_PIN, LOW);  // Turn ON the LED (active LOW)
