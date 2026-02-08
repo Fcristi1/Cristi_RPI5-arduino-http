@@ -1,53 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arduino Control Interface</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    .card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .card h2 {
-      margin-top: 0;
-    }
-    .status {
-      font-weight: bold;
-    }
-    button {
-      padding: 8px 16px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Control Interface</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Arduino Control Interface</h1>
-  <p>Manage Arduino 1 (D1) and Arduino 3 (NodeMCU)</p>
+    <h1>Arduino Control Interface</h1>
+    <p>Manage Arduino 1 (D1) and Arduino 3 (NodeMCU)</p>
 
-  <div class="card" id="arduino1">
-    <h2>Arduino 1 (D1 ESP8266) - 192.168.0.37</h2>
-    <p>Status: <span class="status" id="arduino1-status">Loading...</span></p>
-    <p>Inner LED: <span id="arduino1-led">Loading...</span></p>
-    <button onclick="toggleArduino1LED()">Toggle Inner LED</button>
-    <p>Temperature: <span id="arduino1-temp">-</span> °C</p>
-    <p>Humidity: <span id="arduino1-humidity">-</span> %</p>
-  </div>
+    <div class="card">
+        <h2>Arduino 1 (D1 ESP8266) - 192.168.0.37</h2>
+        <p>Status: <span id="arduino1-status">Loading...</span></p>
+        <p>Inner LED: <span id="arduino1-led">-</span></p>
+        <button onclick="toggleArduino1LED()">Toggle Inner LED</button>
+        <p>Temperature: <span id="arduino1-temp">-</span> °C</p>
+        <p>Humidity: <span id="arduino1-humidity">-</span> %</p>
+    </div>
 
-  <div class="card" id="arduino3">
-    <h2>Arduino 3 (NodeMCU ESP8266) - 192.168.0.161</h2>
-    <p>Status: <span class="status" id="arduino3-status">Loading...</span></p>
-    <p>Inner LED: <span id="arduino3-led">Loading...</span></p>
-    <button onclick="toggleArduino3LED()">Toggle Inner LED</button>
-    <p>Relay D0: <span id="arduino3-relay1">Loading...</span></p>
+    <div class="card">
+        <h2>Arduino 3 (NodeMCU ESP8266) - 192.168.0.161</h2>
+        <p>Status: <span id="arduino3-status">Loading...</span></p>
+        <p>Inner LED: <span id="arduino3-led">-</span></p>
+        <button onclick="toggleArduino3LED()">Toggle Inner LED</button>
+        <p>Relay D0: <span id="arduino3-relay0">-</span></p>
+        <p>Relay D1: <span id="arduino3-relay1">-</span></p>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
     <p>Relay D1: <span id="arduino3-relay2">Loading...</span></p>
     <p>MH Sensor Digital: <span id="arduino3-mh-digital">Loading...</span></p>
     <p>MH Sensor Analog: <span id="arduino3-mh-analog">Loading...</span></p>
