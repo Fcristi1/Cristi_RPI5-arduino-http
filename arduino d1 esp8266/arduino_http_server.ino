@@ -19,8 +19,8 @@ const int DHTTYPE = DHT11;
 DHT dht(DHTPIN, DHTTYPE);
 
 // Define calibration offsets for temperature and humidity
-const float TEMP_OFFSET = 0.0;  // Adjust this value based on discrepancy
-const float HUMIDITY_OFFSET = 0.0;  // Adjust this value based on discrepancy
+const float TEMP_OFFSET = -0.9;  // Adjusted to match thermometer
+const float HUMIDITY_OFFSET = 8.0;  // Adjusted to match thermometer
 
 void setup() {
   Serial.begin(115200);
