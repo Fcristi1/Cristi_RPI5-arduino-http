@@ -19,8 +19,8 @@ const int DHTTYPE = DHT11;
 DHT dht(DHTPIN, DHTTYPE);
 
 // Define calibration offsets for temperature and humidity
-const float TEMP_OFFSET = -0.9;  // Adjusted to match thermometer
-const float HUMIDITY_OFFSET = 8.0;  // Adjusted to match thermometer
+const float TEMP_OFFSET = 1.2;  // Adjusted to match thermometer
+const float HUMIDITY_OFFSET = 5.0;  // Adjusted to match thermometer
 
 void setup() {
   Serial.begin(115200);
@@ -167,11 +167,8 @@ void setupRoutes() {
       return;
     }
 
-    String response = "{\"temperature\":";
-    response += temperature;
-    response += ",\"humidity\":";
-    response += humidity;
-    response += "}";
+    char response[100];
+    snprintf(response, sizeof(response), "{\"temperature\":%.1f,\"humidity\":%.1f}", temperature, humidity);
 
     server.send(200, "application/json", response);
   });
