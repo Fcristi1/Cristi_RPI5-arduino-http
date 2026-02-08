@@ -174,10 +174,23 @@ def arduino1_status():
     """Fetch Arduino 1 status"""
     try:
         response = requests.get(f"{ARDUINO_1_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
-        if response.status_code == 200:
-            return jsonify(response.json())
-        else:
+        if response.status_code != 200:
             return jsonify({"error": "Failed to fetch status"}), 500
+
+        status_payload = response.json()
+
+        # Fill in temperature/humidity by calling the dedicated sensor endpoint when missing
+        if "temperature" not in status_payload or "humidity" not in status_payload:
+            try:
+                sensor_resp = requests.get(f"{ARDUINO_1_BASE_URL}/sensor", timeout=REQUEST_TIMEOUT)
+                if sensor_resp.status_code == 200:
+                    sensor_data = sensor_resp.json()
+                    status_payload["temperature"] = sensor_data.get("temperature", "-")
+                    status_payload["humidity"] = sensor_data.get("humidity", "-")
+            except Exception as sensor_err:
+                print(f"[WARN] Failed to augment Arduino1 status with sensor data: {sensor_err}")
+
+        return jsonify(status_payload)
     except Exception as e:
         return jsonify({"error": str(e), "connected": False}), 500
 
