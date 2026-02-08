@@ -124,6 +124,17 @@ def get_arduino3_status():
             "error": str(e)
         }
 
+def get_nodemcu_status():
+    """Fetch the status of Arduino 3 (NodeMCU)."""
+    try:
+        response = requests.get("http://192.168.0.161:8080/status", timeout=5)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {"error": "Failed to fetch NodeMCU status"}
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
+
 @app.route('/')
 def index():
     """Serve main page"""

@@ -497,3 +497,50 @@ function toggleArduino3Led() {
         })
         .catch(error => console.error('Error toggling Arduino 3 LED:', error));
 }
+
+// Fetch and update Arduino 1 status
+function updateArduino1Status() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            const arduino1 = data.arduino1;
+            document.getElementById('arduino1Status').textContent = arduino1.error ? 'Disconnected' : 'Connected';
+            document.getElementById('arduino1LedStatus').textContent = arduino1.led || 'OFF';
+            document.getElementById('arduino1Temperature').textContent = `${arduino1.temperature || '-'} °C`;
+        })
+        .catch(error => console.error('Error fetching Arduino 1 status:', error));
+}
+
+// Toggle Arduino 1 LED
+function toggleArduino1Led() {
+    fetch('/api/arduino1/led/toggle')
+        .then(() => updateArduino1Status())
+        .catch(error => console.error('Error toggling Arduino 1 LED:', error));
+}
+
+// Fetch and update Arduino 3 status
+function updateArduino3Status() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            const arduino3 = data.arduino3;
+            document.getElementById('arduino3Status').textContent = arduino3.error ? 'Disconnected' : 'Connected';
+            document.getElementById('arduino3LedStatus').textContent = arduino3.builtin_led || 'OFF';
+            document.getElementById('relayD0Status').textContent = arduino3.relay_channel_1 || 'OFF';
+            document.getElementById('relayD1Status').textContent = arduino3.relay_channel_2 || 'OFF';
+        })
+        .catch(error => console.error('Error fetching Arduino 3 status:', error));
+}
+
+// Toggle Arduino 3 LED
+function toggleArduino3Led() {
+    fetch('/api/arduino3/led/toggle')
+        .then(() => updateArduino3Status())
+        .catch(error => console.error('Error toggling Arduino 3 LED:', error));
+}
+
+// Initialize updates
+setInterval(() => {
+    updateArduino1Status();
+    updateArduino3Status();
+}, 2000);

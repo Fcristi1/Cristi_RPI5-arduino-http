@@ -14,23 +14,23 @@
         </header>
 
         <main>
-            <!-- Arduino 1 (D1) Section -->
+            <!-- Arduino 1 (D1 ESP8266) Section -->
             <section class="card">
-                <h2>Arduino 1 (D1) - 192.168.0.37</h2>
-                <p><strong>Status:</strong> <span id="arduino1Connection">Disconnected</span></p>
-                <p><strong>Internal LED:</strong> <span id="arduino1LedStatus">OFF</span></p>
-                <button onclick="toggleArduino1Led()">Toggle Internal LED</button>
-                <p><strong>Temperature:</strong> <span id="arduino1Temperature">- °C</span></p>
+                <h2>Arduino 1 (D1 ESP8266) - 192.168.0.37</h2>
+                <p><strong>Status:</strong> <span id="arduino1Status">Disconnected</span></p>
+                <p><strong>Inner LED:</strong> <span id="arduino1LedStatus">OFF</span></p>
+                <button onclick="toggleArduino1Led()">Toggle Inner LED</button>
+                <p><strong>Temperature:</strong> <span id="arduino1Temperature">-</span> °C</p>
             </section>
 
-            <!-- Arduino 3 (NodeMCU) Section -->
+            <!-- Arduino 3 (NodeMCU ESP8266) Section -->
             <section class="card">
-                <h2>Arduino 3 (NodeMCU) - 192.168.0.161</h2>
-                <p><strong>Status:</strong> <span id="arduino3Connection">Disconnected</span></p>
-                <p><strong>Internal LED:</strong> <span id="arduino3LedStatus">OFF</span></p>
-                <button onclick="toggleArduino3Led()">Toggle Internal LED</button>
-                <p><strong>Relay D0:</strong> <span id="relay1Status">OFF</span></p>
-                <p><strong>Relay D1:</strong> <span id="relay2Status">OFF</span></p>
+                <h2>Arduino 3 (NodeMCU ESP8266) - 192.168.0.161</h2>
+                <p><strong>Status:</strong> <span id="arduino3Status">Disconnected</span></p>
+                <p><strong>Inner LED:</strong> <span id="arduino3LedStatus">OFF</span></p>
+                <button onclick="toggleArduino3Led()">Toggle Inner LED</button>
+                <p><strong>Relay D0:</strong> <span id="relayD0Status">OFF</span></p>
+                <p><strong>Relay D1:</strong> <span id="relayD1Status">OFF</span></p>
             </section>
 
             <!-- LED Control -->
