@@ -307,6 +307,30 @@ def toggle_channel(channel):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/arduino1/led/toggle', methods=['POST'])
+def toggle_arduino1_led():
+    """Toggle internal LED for Arduino 1"""
+    try:
+        response = requests.get(f"{ARDUINO_1_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify({"status": "success", "message": "Arduino 1 LED toggled"})
+        else:
+            return jsonify({"status": "error", "message": "Failed to toggle Arduino 1 LED"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/arduino3/led/toggle', methods=['POST'])
+def toggle_arduino3_led():
+    """Toggle internal LED for Arduino 3"""
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify({"status": "success", "message": "Arduino 3 LED toggled"})
+        else:
+            return jsonify({"status": "error", "message": "Failed to toggle Arduino 3 LED"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     """Handle 404 errors"""

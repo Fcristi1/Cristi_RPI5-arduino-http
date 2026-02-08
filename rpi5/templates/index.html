@@ -19,12 +19,11 @@
                 <h2>Arduino 1 (D1) Status</h2>
                 <div class="status-details">
                     <p><strong>Connection Status:</strong> <span id="arduino1Connection">Disconnected</span></p>
-                    <p><strong>IP Address:</strong> <span id="arduino1Ip">-</span></p>
+                    <p><strong>IP Address:</strong> <span id="arduino1Ip">192.168.0.37</span></p>
                     <p><strong>Last Update:</strong> <span id="arduino1LastUpdate">-</span></p>
                     <p id="arduino1LedStatus">LED: OFF</p>
-                    <p id="arduino1BuiltinLedStatus">Built-in LED: OFF</p>
+                    <button onclick="toggleArduino1Led()">Toggle Internal LED</button>
                     <p id="arduino1Temperature">Temperature: - °C</p>
-                    <p id="arduino1Humidity">Humidity: - %</p>
                 </div>
             </section>
 
@@ -33,11 +32,12 @@
                 <h2>Arduino 3 (NodeMCU) Status</h2>
                 <div class="status-details">
                     <p><strong>Connection Status:</strong> <span id="arduino3Connection">Disconnected</span></p>
-                    <p><strong>IP Address:</strong> <span id="arduino3Ip">-</span></p>
+                    <p><strong>IP Address:</strong> <span id="arduino3Ip">192.168.0.161</span></p>
                     <p><strong>Last Update:</strong> <span id="arduino3LastUpdate">-</span></p>
-                    <p id="arduino3BuiltinLedStatus">Built-in LED: OFF</p>
-                    <p id="relay1Status">Relay Channel 1: OFF</p>
-                    <p id="relay2Status">Relay Channel 2: OFF</p>
+                    <p id="arduino3LedStatus">LED: OFF</p>
+                    <button onclick="toggleArduino3Led()">Toggle Internal LED</button>
+                    <p id="relay1Status">Relay Channel D0: OFF</p>
+                    <p id="relay2Status">Relay Channel D1: OFF</p>
                 </div>
             </section>
 

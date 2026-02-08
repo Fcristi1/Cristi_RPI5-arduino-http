@@ -486,3 +486,23 @@ document.addEventListener('keydown', function(event) {
         ledToggle();
     }
 });
+
+function toggleArduino1Led() {
+    fetch('/api/arduino1/led/toggle', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Arduino 1 LED toggled:', data);
+            updateStatus();
+        })
+        .catch(error => console.error('Error toggling Arduino 1 LED:', error));
+}
+
+function toggleArduino3Led() {
+    fetch('/api/arduino3/led/toggle', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Arduino 3 LED toggled:', data);
+            updateStatus();
+        })
+        .catch(error => console.error('Error toggling Arduino 3 LED:', error));
+}
