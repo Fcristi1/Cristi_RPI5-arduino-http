@@ -105,8 +105,8 @@ async function fetchSensorData() {
             const data = await response.json();
 
             // Update temperature and humidity fields
-            document.getElementById('arduino1-temp').innerText = data.temperature || '-';
-            document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
+            document.getElementById('arduino1-temp').innerText = data.temperature ? `${data.temperature} °C` : '-';
+            document.getElementById('arduino1-humidity').innerText = data.humidity ? `${data.humidity} %` : '-';
         } else {
             document.getElementById('arduino1-temp').innerText = 'Error';
             document.getElementById('arduino1-humidity').innerText = 'Error';
@@ -117,5 +117,22 @@ async function fetchSensorData() {
     }
 }
 
-// Call fetchSensorData periodically to update the values
-setInterval(fetchSensorData, 5000); // Update every 5 seconds
+async function fetchStatus() {
+    try {
+        const response = await fetch('http://192.168.0.37:8080/status'); // Fetch status data
+        if (response.ok) {
+            const data = await response.json();
+
+            // Update LED status
+            document.getElementById('arduino1-led').innerText = data.led || 'Unknown';
+        } else {
+            document.getElementById('arduino1-led').innerText = 'Error';
+        }
+    } catch (error) {
+        document.getElementById('arduino1-led').innerText = 'Connection error';
+    }
+}
+
+// Call fetchSensorData and fetchStatus periodically to update the values
+setInterval(fetchSensorData, 5000); // Update sensor data every 5 seconds
+setInterval(fetchStatus, 5000); // Update status every 5 seconds
