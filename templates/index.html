@@ -3,21 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NodeMCU Status</title>
+    <title>Arduino Control</title>
     <link rel="stylesheet" href="/static/style.css">
     <script src="/static/script.js" defer></script>
 </head>
 <body>
-    <h1>Arduino Status Dashboard</h1>
+    <h1>Arduino Control Dashboard</h1>
 
-    <div id="arduino-d1-status">
-        <h2>Arduino D1 Status</h2>
+    <div id="arduino-d1-details">
+        <h2>Arduino1 D1 ESP8266</h2>
         <p id="d1-status">Loading...</p>
     </div>
 
-    <div id="arduino-nodemcu-status">
-        <h2>NodeMCU Status</h2>
+    <div id="arduino-nodemcu-details">
+        <h2>Arduino3 NodeMCU ESP8266</h2>
         <p id="nodemcu-status">Loading...</p>
+
+        <h3>Built-in LED</h3>
+        <button onclick="toggleNodeMCULed()">Toggle LED</button>
+
+        <h3>Relay Board</h3>
+        <p>Channel 1: <span id="relay1-status">Loading...</span></p>
+        <p>Channel 2: <span id="relay2-status">Loading...</span></p>
+        <button onclick="toggleRelay(1)">Toggle Channel 1</button>
+        <button onclick="toggleRelay(2)">Toggle Channel 2</button>
     </div>
 
     <div id="relay-status">
