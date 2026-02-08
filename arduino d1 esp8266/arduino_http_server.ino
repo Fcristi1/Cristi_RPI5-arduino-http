@@ -13,7 +13,7 @@ ESP8266WebServer server(8080);
 const int LED_PIN = D0;  // GPIO16 - External LED
 const int BUILTIN_LED_PIN = D4;  // GPIO2 - On-board LED (active LOW)
 const int BUTTON_PIN = D1;  // GPIO5
-const int DHTPIN = D2;  // Pin connected to the DHT sensor
+const int DHTPIN = D11;  // Pin connected to the DHT sensor
 const int DHTTYPE = DHT11;
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -22,8 +22,13 @@ void setup() {
   delay(100);
 
   pinMode(LED_PIN, OUTPUT);
-  pinMode(BUILTIN_LED_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP); // Enable internal pull-up resistor for button
+  pinMode(BUILTIN_LED_PIN, OUTPUT); // Ensure pin mode is set for built-in LED
+
+  // Test the built-in LED
+  digitalWrite(BUILTIN_LED_PIN, LOW);  // Turn ON the LED (active LOW)
+  delay(1000);
+  digitalWrite(BUILTIN_LED_PIN, HIGH); // Turn OFF the LED
+  delay(1000);
 
   digitalWrite(LED_PIN, LOW);
   digitalWrite(BUILTIN_LED_PIN, HIGH); // Off by default (active LOW)
@@ -33,6 +38,7 @@ void setup() {
 
   // Initialize DHT sensor
   dht.begin();
+  Serial.println("DHT sensor initialized on D11");
 
   // Define HTTP routes
   setupRoutes();
