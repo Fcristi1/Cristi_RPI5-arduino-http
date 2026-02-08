@@ -135,14 +135,18 @@ async function fetchStatus() {
 
 async function fetchTemperature() {
     try {
+        console.log("Fetching temperature..."); // Debug log
         const response = await fetch('/api/temperature'); // Fetch temperature data
         if (response.ok) {
             const data = await response.json();
+            console.log("Temperature data received:", data); // Debug log
             document.getElementById('arduino1-temp').innerText = data.temperature ? `${data.temperature} °C` : '-';
         } else {
+            console.error("Error fetching temperature: HTTP", response.status); // Debug log
             document.getElementById('arduino1-temp').innerText = 'Error';
         }
     } catch (error) {
+        console.error("Connection error while fetching temperature:", error); // Debug log
         document.getElementById('arduino1-temp').innerText = 'Connection error';
     }
 }
