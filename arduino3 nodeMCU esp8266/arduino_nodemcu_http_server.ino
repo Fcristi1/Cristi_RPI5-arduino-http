@@ -20,6 +20,10 @@ const int relay2Pin = D1;
 // Ensure LED_BUILTIN is defined for NodeMCU
 #define LED_BUILTIN 2  // GPIO2 (D4) for NodeMCU
 
+// Define pins for the MH-Sensor
+const int mhSensorDigitalPin = D2; // Digital output pin
+const int mhSensorAnalogPin = A0;  // Analog output pin
+
 // Function to handle root endpoint
 void handleRoot() {
   String message = "<html><body><h1>NodeMCU Status</h1>";
@@ -102,6 +106,20 @@ void turnRelay2Off() {
   server.send(200, "application/json", "{\"status\":\"Relay 2 turned OFF\"}");
 }
 
+// Function to read the digital output of the MH-Sensor
+void readMHSensorDigital() {
+  int digitalValue = digitalRead(mhSensorDigitalPin);
+  String response = "{\"digital\":\"" + String(digitalValue == HIGH ? "HIGH" : "LOW") + "\"}";
+  server.send(200, "application/json", response);
+}
+
+// Function to read the analog output of the MH-Sensor
+void readMHSensorAnalog() {
+  int analogValue = analogRead(mhSensorAnalogPin);
+  String response = "{\"analog\":" + String(analogValue) + "}";
+  server.send(200, "application/json", response);
+}
+
 void setup() {
   // Start serial communication
   Serial.begin(115200);
@@ -128,6 +146,10 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH); // Ensure the LED is OFF initially
 
+  // Initialize MH-Sensor pins
+  pinMode(mhSensorDigitalPin, INPUT);
+  pinMode(mhSensorAnalogPin, INPUT);
+
   // Define server routes
   server.on("/", handleRoot);
   server.on("/toggleChannel1", toggleChannel1);
@@ -140,6 +162,8 @@ void setup() {
   server.on("/relay1/off", turnRelay1Off);
   server.on("/relay2/on", turnRelay2On);
   server.on("/relay2/off", turnRelay2Off);
+  server.on("/mh/digital", readMHSensorDigital);
+  server.on("/mh/analog", readMHSensorAnalog);
 
   // Start the server
   server.begin();
