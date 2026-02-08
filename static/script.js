@@ -1,14 +1,19 @@
 async function fetchD1Details() {
     try {
-        const response = await fetch('/api/d1/status');
+        const response = await fetch('http://192.168.0.37:8080/status'); // Correct endpoint
         if (response.ok) {
             const data = await response.json();
-            document.getElementById('d1-status').innerHTML = JSON.stringify(data, null, 2);
+
+            // Update specific fields
+            document.getElementById('arduino1-status').innerText = 'Connected';
+            document.getElementById('arduino1-led').innerText = data.led || 'Unknown';
+            document.getElementById('arduino1-temp').innerText = data.temperature || '-';
+            document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
         } else {
-            document.getElementById('d1-status').innerHTML = 'Error fetching Arduino D1 details';
+            document.getElementById('arduino1-status').innerText = 'Error fetching status';
         }
     } catch (error) {
-        document.getElementById('d1-status').innerHTML = 'Connection error';
+        document.getElementById('arduino1-status').innerText = 'Connection error';
     }
 }
 
@@ -74,6 +79,17 @@ async function toggleRelay(channel) {
     } catch (error) {
         alert('Connection error');
     }
+}
+
+function toggleArduino1LED() {
+    fetch('http://192.168.0.37:8080/led/toggle')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('arduino1-led').innerText = data.status.includes('ON') ? 'ON' : 'OFF';
+        })
+        .catch(() => {
+            document.getElementById('arduino1-led').innerText = 'Error';
+        });
 }
 
 // Fetch initial details and set interval for updates
