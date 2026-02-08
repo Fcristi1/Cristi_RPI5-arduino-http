@@ -82,17 +82,14 @@ async function toggleRelay(channel) {
 }
 
 function toggleArduino1LED() {
-    fetch('http://192.168.0.37:8080/led/toggle')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('arduino1-led').innerText = data.status.includes('ON') ? 'ON' : 'OFF';
-        })
-        .catch(() => {
-            document.getElementById('arduino1-led').innerText = 'Error';
-        });
+    console.log("Toggling Arduino 1 LED");
+    const message = new Paho.MQTT.Message("TOGGLE_LED");
+    message.destinationName = "arduino1/command";
+    mqttClient.send(message);
 }
 
 function toggleArduino3LED() {
+    console.log("Toggling Arduino 3 LED");
     const message = new Paho.MQTT.Message("TOGGLE_LED");
     message.destinationName = "arduino3/command";
     mqttClient.send(message);
@@ -178,10 +175,12 @@ mqttClient.onMessageArrived = (message) => {
     const payload = JSON.parse(message.payloadString);
 
     if (topic === "arduino1/sensor") {
+        console.log("Updating Arduino 1 sensor data");
         document.getElementById('arduino1-status').innerText = 'Connected';
         document.getElementById('arduino1-temp').innerText = payload.temperature || '-';
         document.getElementById('arduino1-humidity').innerText = payload.humidity || '-';
     } else if (topic === "arduino3/status") {
+        console.log("Updating Arduino 3 status");
         document.getElementById('arduino3-status').innerText = payload.connected ? 'Connected' : 'Disconnected';
         document.getElementById('arduino3-relay0').innerText = payload.relay0 || 'OFF';
         document.getElementById('arduino3-relay1').innerText = payload.relay1 || 'OFF';
