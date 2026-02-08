@@ -75,19 +75,15 @@
         const statusResponse = await fetch('http://192.168.0.161/status');
         const mhDigitalResponse = await fetch('http://192.168.0.161/mh/digital');
         const mhAnalogResponse = await fetch('http://192.168.0.161/mh/analog');
-        const relay1Response = await fetch('http://192.168.0.161/relay1/status');
-        const relay2Response = await fetch('http://192.168.0.161/relay2/status');
 
         const statusData = await statusResponse.json();
         const mhDigitalData = await mhDigitalResponse.json();
         const mhAnalogData = await mhAnalogResponse.json();
-        const relay1Data = await relay1Response.json();
-        const relay2Data = await relay2Response.json();
 
         document.getElementById('arduino3-status').textContent = 'Connected';
         document.getElementById('arduino3-led').textContent = statusData.builtin_led;
-        document.getElementById('arduino3-relay1').textContent = relay1Data.status;
-        document.getElementById('arduino3-relay2').textContent = relay2Data.status;
+        document.getElementById('arduino3-relay1').textContent = statusData.relay1;
+        document.getElementById('arduino3-relay2').textContent = statusData.relay2;
         document.getElementById('arduino3-mh-digital').textContent = mhDigitalData.digital;
         document.getElementById('arduino3-mh-analog').textContent = mhAnalogData.analog;
       } catch (error) {
@@ -112,10 +108,12 @@
 
     async function toggleArduino3LED() {
       try {
-        await fetch('http://192.168.0.161/builtin/toggle');
+        const response = await fetch('http://192.168.0.161/builtin/toggle');
+        const result = await response.json();
+        console.log(result.status);
         fetchArduino3Data();
       } catch (error) {
-        console.error('Failed to toggle Arduino 3 LED');
+        console.error('Failed to toggle Arduino 3 LED:', error);
       }
     }
 
