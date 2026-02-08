@@ -29,7 +29,6 @@ REQUEST_TIMEOUT = 5
 current_status = {
     "led": "OFF",
     "builtin_led": "OFF",
-    "button": "RELEASED",
     "ip": "Unknown",
     "connected": False,
     "last_update": None
@@ -48,7 +47,6 @@ def get_arduino_status():
             current_status.update({
                 "led": data.get("led", "OFF"),
                 "builtin_led": data.get("builtin_led", "OFF"),
-                "button": data.get("button", "RELEASED"),
                 "ip": data.get("ip", "Unknown"),
                 "connected": data.get("builtin_led", "OFF") == "ON",  # Online if Built-in LED is ON
                 "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -75,8 +73,34 @@ def continuous_status_update():
 status_thread = threading.Thread(target=continuous_status_update, daemon=True)
 status_thread.start()
 
-def get_nodemcu_status():
-    """Fetch status from Arduino NodeMCU"""
+def get_arduino1_status():
+    """Fetch status from Arduino 1 (D1)"""
+    try:
+        response = requests.get(
+            f"{ARDUINO_1_BASE_URL}/status",
+            timeout=REQUEST_TIMEOUT
+        )
+        if response.status_code == 200:
+            data = response.json()
+            return {
+                "led": data.get("led", "OFF"),
+                "builtin_led": data.get("builtin_led", "OFF"),
+                "temperature": data.get("temperature", "N/A"),
+                "humidity": data.get("humidity", "N/A"),
+                "ip": ARDUINO_1_IP,
+                "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        else:
+            return {
+                "error": f"Failed to fetch status: HTTP {response.status_code}"
+            }
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
+
+def get_arduino3_status():
+    """Fetch status from Arduino 3 (NodeMCU)"""
     try:
         response = requests.get(
             f"{ARDUINO_3_BASE_URL}/status",
@@ -100,16 +124,6 @@ def get_nodemcu_status():
             "error": str(e)
         }
 
-# Check connection to Arduino NodeMCU
-try:
-    response = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
-    if response.status_code == 200:
-        print(f"✓ Connected to Arduino NodeMCU at {ARDUINO_3_IP}")
-    else:
-        print(f"✗ Failed to connect to Arduino NodeMCU at {ARDUINO_3_IP}")
-except Exception as e:
-    print(f"✗ Error connecting to Arduino NodeMCU at {ARDUINO_3_IP}: {e}")
-
 @app.route('/')
 def index():
     """Serve main page"""
@@ -117,8 +131,11 @@ def index():
 
 @app.route('/api/status', methods=['GET'])
 def api_status():
-    """API endpoint: get current status"""
-    return jsonify(current_status)
+    """API endpoint: get current status for both Arduinos"""
+    return jsonify({
+        "arduino1": get_arduino1_status(),
+        "arduino3": get_arduino3_status()
+    })
 
 @app.route('/api/config', methods=['GET'])
 def api_config():
