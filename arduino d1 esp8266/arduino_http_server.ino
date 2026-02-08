@@ -18,6 +18,10 @@ const int DHTPIN = D11;  // Pin connected to the DHT sensor
 const int DHTTYPE = DHT11;
 DHT dht(DHTPIN, DHTTYPE);
 
+// Define calibration offsets for temperature and humidity
+const float TEMP_OFFSET = 0.0;  // Adjust this value based on discrepancy
+const float HUMIDITY_OFFSET = 0.0;  // Adjust this value based on discrepancy
+
 void setup() {
   Serial.begin(115200);
   delay(100);
@@ -153,10 +157,10 @@ void setupRoutes() {
     server.send(200, "application/json", response);
   });
 
-  // GET /sensor - returns temperature and humidity
+  // GET /sensor - returns calibrated temperature and humidity
   server.on("/sensor", HTTP_GET, []() {
-    float temperature = dht.readTemperature();
-    float humidity = dht.readHumidity();
+    float temperature = dht.readTemperature() + TEMP_OFFSET;
+    float humidity = dht.readHumidity() + HUMIDITY_OFFSET;
 
     if (isnan(temperature) || isnan(humidity)) {
       server.send(500, "application/json", "{\"error\":\"Failed to read from DHT sensor\"}");
