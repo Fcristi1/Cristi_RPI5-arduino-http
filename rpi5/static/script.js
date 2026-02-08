@@ -47,24 +47,15 @@ function updateStatus() {
             // Update Arduino 1 (D1) status
             const arduino1 = data.arduino1;
             document.getElementById('arduino1Connection').textContent = arduino1.error ? 'Disconnected' : 'Connected';
-            document.getElementById('arduino1Ip').textContent = arduino1.ip || '-';
-            document.getElementById('arduino1LastUpdate').textContent = arduino1.last_update || '-';
-            document.getElementById('arduino1LedStatus').textContent = `LED: ${arduino1.led}`;
-            document.getElementById('arduino1BuiltinLedStatus').textContent = `Built-in LED: ${arduino1.builtin_led}`;
-            document.getElementById('arduino1Temperature').textContent = `Temperature: ${arduino1.temperature} °C`;
-            document.getElementById('arduino1Humidity').textContent = `Humidity: ${arduino1.humidity} %`;
+            document.getElementById('arduino1LedStatus').textContent = arduino1.led || 'OFF';
+            document.getElementById('arduino1Temperature').textContent = `${arduino1.temperature || '-'} °C`;
 
             // Update Arduino 3 (NodeMCU) status
             const arduino3 = data.arduino3;
             document.getElementById('arduino3Connection').textContent = arduino3.error ? 'Disconnected' : 'Connected';
-            document.getElementById('arduino3Ip').textContent = arduino3.ip || '-';
-            document.getElementById('arduino3LastUpdate').textContent = arduino3.last_update || '-';
-            document.getElementById('arduino3BuiltinLedStatus').textContent = `Built-in LED: ${arduino3.builtin_led}`;
-            document.getElementById('relay1Status').textContent = `Relay Channel 1: ${arduino3.relay_channel_1}`;
-            document.getElementById('relay2Status').textContent = `Relay Channel 2: ${arduino3.relay_channel_2}`;
-
-            currentStatus = data;
-            updateUI();
+            document.getElementById('arduino3LedStatus').textContent = arduino3.builtin_led || 'OFF';
+            document.getElementById('relay1Status').textContent = arduino3.relay_channel_1 || 'OFF';
+            document.getElementById('relay2Status').textContent = arduino3.relay_channel_2 || 'OFF';
         })
         .catch(error => {
             console.error('Error fetching status:', error);
@@ -502,7 +493,7 @@ function toggleArduino3Led() {
         .then(response => response.json())
         .then(data => {
             console.log('Arduino 3 LED toggled:', data);
-            updateStatus();
+            updateArduino3Status();
         })
         .catch(error => console.error('Error toggling Arduino 3 LED:', error));
 }

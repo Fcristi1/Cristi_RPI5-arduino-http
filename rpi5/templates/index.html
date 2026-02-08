@@ -9,36 +9,28 @@
 <body>
     <div class="container">
         <header>
-            <h1>🔌 Arduino Control</h1>
-            <p class="subtitle">Raspberry Pi 5 Interface for Arduino 1 (D1) and Arduino 3 (NodeMCU)</p>
+            <h1>Arduino Control Interface</h1>
+            <p>Manage Arduino 1 (D1) and Arduino 3 (NodeMCU)</p>
         </header>
 
         <main>
-            <!-- Arduino 1 Section -->
-            <section class="card status-card">
-                <h2>Arduino 1 (D1) Status</h2>
-                <div class="status-details">
-                    <p><strong>Connection Status:</strong> <span id="arduino1Connection">Disconnected</span></p>
-                    <p><strong>IP Address:</strong> <span id="arduino1Ip">192.168.0.37</span></p>
-                    <p><strong>Last Update:</strong> <span id="arduino1LastUpdate">-</span></p>
-                    <p id="arduino1LedStatus">LED: OFF</p>
-                    <button onclick="toggleArduino1Led()">Toggle Internal LED</button>
-                    <p id="arduino1Temperature">Temperature: - °C</p>
-                </div>
+            <!-- Arduino 1 (D1) Section -->
+            <section class="card">
+                <h2>Arduino 1 (D1) - 192.168.0.37</h2>
+                <p><strong>Status:</strong> <span id="arduino1Connection">Disconnected</span></p>
+                <p><strong>Internal LED:</strong> <span id="arduino1LedStatus">OFF</span></p>
+                <button onclick="toggleArduino1Led()">Toggle Internal LED</button>
+                <p><strong>Temperature:</strong> <span id="arduino1Temperature">- °C</span></p>
             </section>
 
-            <!-- Arduino 3 Section -->
-            <section class="card status-card">
-                <h2>Arduino 3 (NodeMCU) Status</h2>
-                <div class="status-details">
-                    <p><strong>Connection Status:</strong> <span id="arduino3Connection">Disconnected</span></p>
-                    <p><strong>IP Address:</strong> <span id="arduino3Ip">192.168.0.161</span></p>
-                    <p><strong>Last Update:</strong> <span id="arduino3LastUpdate">-</span></p>
-                    <p id="arduino3LedStatus">LED: OFF</p>
-                    <button onclick="toggleArduino3Led()">Toggle Internal LED</button>
-                    <p id="relay1Status">Relay Channel D0: OFF</p>
-                    <p id="relay2Status">Relay Channel D1: OFF</p>
-                </div>
+            <!-- Arduino 3 (NodeMCU) Section -->
+            <section class="card">
+                <h2>Arduino 3 (NodeMCU) - 192.168.0.161</h2>
+                <p><strong>Status:</strong> <span id="arduino3Connection">Disconnected</span></p>
+                <p><strong>Internal LED:</strong> <span id="arduino3LedStatus">OFF</span></p>
+                <button onclick="toggleArduino3Led()">Toggle Internal LED</button>
+                <p><strong>Relay D0:</strong> <span id="relay1Status">OFF</span></p>
+                <p><strong>Relay D1:</strong> <span id="relay2Status">OFF</span></p>
             </section>
 
             <!-- LED Control -->

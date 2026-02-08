@@ -331,6 +331,18 @@ def toggle_arduino3_led():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/arduino3/sensor', methods=['GET'])
+def get_arduino3_sensor():
+    """Fetch sensor data from Arduino 3"""
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/sensor", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"status": "error", "message": "Failed to fetch sensor data"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     """Handle 404 errors"""
