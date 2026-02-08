@@ -135,10 +135,58 @@ def get_nodemcu_status():
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}
 
+@app.route('/api/arduino1/led/toggle', methods=['POST'])
+def toggle_arduino1_led():
+    """Toggle Arduino 1 LED"""
+    try:
+        response = requests.get(f"{ARDUINO_1_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to toggle LED"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/arduino3/led/toggle', methods=['POST'])
+def toggle_arduino3_led():
+    """Toggle Arduino 3 LED"""
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to toggle LED"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/')
 def index():
     """Serve main page"""
     return render_template('index.html')
+
+@app.route('/api/arduino1/status', methods=['GET'])
+def arduino1_status():
+    """Fetch Arduino 1 status"""
+    try:
+        response = requests.get(f"{ARDUINO_1_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to fetch status"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e), "connected": False}), 500
+
+@app.route('/api/arduino3/status', methods=['GET'])
+def arduino3_status():
+    """Fetch Arduino 3 status"""
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to fetch status"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e), "connected": False}), 500
 
 @app.route('/api/status', methods=['GET'])
 def get_status():
