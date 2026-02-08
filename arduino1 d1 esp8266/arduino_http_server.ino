@@ -99,6 +99,9 @@ void setupRoutes() {
     String buttonState = digitalRead(BUTTON_PIN) ? "RELEASED" : "PRESSED";
     String builtinLedState = (digitalRead(BUILTIN_LED_PIN) == LOW) ? "ON" : "OFF";
 
+    float temperature = dht.readTemperature() + TEMP_OFFSET;
+    float humidity = dht.readHumidity() + HUMIDITY_OFFSET;
+
     String response = "{\"led\":\"";
     response += ledState;
     response += "\",\"button\":\"";
@@ -107,6 +110,14 @@ void setupRoutes() {
     response += builtinLedState;
     response += "\",\"ip\":\"";
     response += WiFi.localIP().toString();
+
+    if (!isnan(temperature) && !isnan(humidity)) {
+      response += "\",\"temperature\":\"";
+      response += String(temperature);
+      response += "\",\"humidity\":\"";
+      response += String(humidity);
+    }
+
     response += "\"}";
 
     server.send(200, "application/json", response);
