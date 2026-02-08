@@ -17,6 +17,9 @@ bool channel2Status = false;
 const int relay1Pin = D0;
 const int relay2Pin = D1;
 
+// Ensure LED_BUILTIN is defined for NodeMCU
+#define LED_BUILTIN 2  // GPIO2 (D4) for NodeMCU
+
 // Function to handle root endpoint
 void handleRoot() {
   String message = "<html><body><h1>NodeMCU Status</h1>";
@@ -54,12 +57,14 @@ void handleStatus() {
 
 // Function to turn built-in LED ON
 void turnBuiltinLedOn() {
+  Serial.println("Turning Built-in LED ON");
   digitalWrite(LED_BUILTIN, LOW); // Active LOW
   server.send(200, "application/json", "{\"status\":\"Built-in LED turned ON\"}");
 }
 
 // Function to turn built-in LED OFF
 void turnBuiltinLedOff() {
+  Serial.println("Turning Built-in LED OFF");
   digitalWrite(LED_BUILTIN, HIGH);
   server.send(200, "application/json", "{\"status\":\"Built-in LED turned OFF\"}");
 }
@@ -118,6 +123,10 @@ void setup() {
   pinMode(relay2Pin, OUTPUT);
   digitalWrite(relay1Pin, LOW);
   digitalWrite(relay2Pin, LOW);
+
+  // Initialize built-in LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH); // Ensure the LED is OFF initially
 
   // Define server routes
   server.on("/", handleRoot);
