@@ -218,6 +218,32 @@ def api_sensor():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/nodemcu/status', methods=['GET'])
+def nodemcu_status():
+    """API endpoint: Get NodeMCU channel statuses"""
+    try:
+        response = requests.get(f"{ARDUINO_BASE_URL}/", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return response.text, 200  # Return HTML response
+        else:
+            return jsonify({"error": "Failed to fetch status"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/nodemcu/toggle/<int:channel>', methods=['POST'])
+def toggle_channel(channel):
+    """API endpoint: Toggle a specific channel on NodeMCU"""
+    if channel not in [1, 2]:
+        return jsonify({"error": "Invalid channel"}), 400
+    try:
+        response = requests.get(f"{ARDUINO_BASE_URL}/toggleChannel{channel}", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return response.text, 200  # Return plain text response
+        else:
+            return jsonify({"error": "Failed to toggle channel"}), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     """Handle 404 errors"""

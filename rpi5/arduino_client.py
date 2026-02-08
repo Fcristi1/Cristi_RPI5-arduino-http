@@ -66,6 +66,31 @@ class ArduinoClient:
             print(f"Error: {e}")
             return None
 
+    def get_channel_status(self):
+        """Get the status of both channels"""
+        try:
+            response = requests.get(f"{self.base_url}/", timeout=self.timeout)
+            if response.status_code == 200:
+                return response.text  # Assuming the server returns HTML
+            else:
+                print(f"Error: HTTP {response.status_code}")
+                return None
+        except requests.exceptions.ConnectionError:
+            print(f"Error: Cannot connect to NodeMCU at {self.base_url}")
+            return None
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def toggle_channel(self, channel):
+        """Toggle a specific channel (1 or 2)"""
+        try:
+            response = requests.get(f"{self.base_url}/toggleChannel{channel}", timeout=self.timeout)
+            return response.text if response.status_code == 200 else None
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
 def main():
     """Interactive CLI for Arduino control"""
     
