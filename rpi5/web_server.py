@@ -83,11 +83,22 @@ def get_nodemcu_status():
             timeout=REQUEST_TIMEOUT
         )
         if response.status_code == 200:
-            return response.text  # Assuming NodeMCU returns HTML
+            data = response.json()
+            return {
+                "builtin_led": data.get("builtin_led", "OFF"),
+                "relay_channel_1": data.get("relay_channel_1", "OFF"),
+                "relay_channel_2": data.get("relay_channel_2", "OFF"),
+                "ip": ARDUINO_3_IP,
+                "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
         else:
-            return "Error fetching NodeMCU status"
+            return {
+                "error": f"Failed to fetch status: HTTP {response.status_code}"
+            }
     except Exception as e:
-        return f"Error: {e}"
+        return {
+            "error": str(e)
+        }
 
 # Check connection to Arduino NodeMCU
 try:
