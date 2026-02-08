@@ -13,7 +13,8 @@ import threading
 from datetime import datetime
 import os
 
-app = Flask(__name__)
+# Configure Flask to serve templates from parent directory
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 # Arduino configuration for renamed folders
 ARDUINO_1_IP = "192.168.0.37"  # Arduino 1 (D1 ESP8266)

@@ -1,153 +1,69 @@
-async function fetchD1Details() {
+async function fetchArduino1Status() {
     try {
-        const response = await fetch('http://192.168.0.37:8080/status'); // Correct endpoint
+        const response = await fetch('/api/arduino1/status');
         if (response.ok) {
             const data = await response.json();
-
-            // Update specific fields
             document.getElementById('arduino1-status').innerText = 'Connected';
-            document.getElementById('arduino1-led').innerText = data.led || 'Unknown';
+            document.getElementById('arduino1-led').innerText = data.led || 'OFF';
             document.getElementById('arduino1-temp').innerText = data.temperature || '-';
             document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
         } else {
-            document.getElementById('arduino1-status').innerText = 'Error fetching status';
+            document.getElementById('arduino1-status').innerText = 'Disconnected';
         }
     } catch (error) {
-        document.getElementById('arduino1-status').innerText = 'Connection error';
+        document.getElementById('arduino1-status').innerText = 'Disconnected';
+        console.error('Error fetching Arduino 1 status:', error);
     }
 }
 
-async function fetchNodeMCUDetails() {
+async function fetchArduino3Status() {
     try {
-        const response = await fetch('/api/nodemcu/status');
+        const response = await fetch('/api/arduino3/status');
         if (response.ok) {
-            const text = await response.text();
-            document.getElementById('nodemcu-status').innerHTML = text;
-
-            // Update relay statuses based on response
-            const channel1 = text.includes('Channel 1: ON') ? 'ON' : 'OFF';
-            const channel2 = text.includes('Channel 2: ON') ? 'ON' : 'OFF';
-            document.getElementById('relay1-status').innerText = channel1;
-            document.getElementById('relay2-status').innerText = channel2;
+            const data = await response.json();
+            document.getElementById('arduino3-status').innerText = 'Connected';
+            document.getElementById('arduino3-led').innerText = data.builtin_led || 'OFF';
+            document.getElementById('arduino3-relay0').innerText = data.relay_channel_1 || 'OFF';
+            document.getElementById('arduino3-relay1').innerText = data.relay_channel_2 || 'OFF';
         } else {
-            document.getElementById('nodemcu-status').innerHTML = 'Error fetching NodeMCU details';
+            document.getElementById('arduino3-status').innerText = 'Disconnected';
         }
     } catch (error) {
-        document.getElementById('nodemcu-status').innerHTML = 'Connection error';
+        document.getElementById('arduino3-status').innerText = 'Disconnected';
+        console.error('Error fetching Arduino 3 status:', error);
     }
 }
 
-async function updateRelayStatus() {
+async function toggleArduino1LED() {
     try {
-        const response = await fetch('/api/nodemcu/status');
+        const response = await fetch('/api/arduino1/led/toggle', { method: 'POST' });
         if (response.ok) {
-            const text = await response.text();
-            const channel1 = text.includes('Channel 1: ON') ? 'ON' : 'OFF';
-            const channel2 = text.includes('Channel 2: ON') ? 'ON' : 'OFF';
-
-            document.getElementById('channel1-status').innerText = channel1;
-            document.getElementById('channel2-status').innerText = channel2;
+            await fetchArduino1Status();
         } else {
-            document.getElementById('channel1-status').innerText = 'Error';
-            document.getElementById('channel2-status').innerText = 'Error';
-        }
-    } catch (error) {
-        document.getElementById('channel1-status').innerText = 'Connection error';
-        document.getElementById('channel2-status').innerText = 'Connection error';
-    }
-}
-
-async function toggleNodeMCULed() {
-    try {
-        const response = await fetch('/api/nodemcu/led/toggle', { method: 'POST' });
-        if (!response.ok) {
-            alert('Failed to toggle NodeMCU LED');
+            alert('Failed to toggle Arduino 1 LED');
         }
     } catch (error) {
         alert('Connection error');
+        console.error('Error toggling Arduino 1 LED:', error);
     }
 }
 
-async function toggleRelay(channel) {
+async function toggleArduino3LED() {
     try {
-        const response = await fetch(`/api/nodemcu/toggle/${channel}`, { method: 'POST' });
+        const response = await fetch('/api/arduino3/led/toggle', { method: 'POST' });
         if (response.ok) {
-            await fetchNodeMCUDetails();
+            await fetchArduino3Status();
         } else {
-            alert(`Failed to toggle Relay Channel ${channel}`);
+            alert('Failed to toggle Arduino 3 LED');
         }
     } catch (error) {
         alert('Connection error');
+        console.error('Error toggling Arduino 3 LED:', error);
     }
 }
 
-function toggleArduino1LED() {
-    fetch('http://192.168.0.37:8080/led/toggle')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('arduino1-led').innerText = data.status.includes('ON') ? 'ON' : 'OFF';
-        })
-        .catch(() => {
-            document.getElementById('arduino1-led').innerText = 'Error';
-        });
-}
-
-// Fetch initial details and set interval for updates
-fetchD1Details();
-fetchNodeMCUDetails();
-setInterval(fetchD1Details, 5000);
-setInterval(fetchNodeMCUDetails, 5000);
-
-async function fetchSensorData() {
-    try {
-        const response = await fetch('http://192.168.0.37:8080/sensor'); // Fetch sensor data
-        if (response.ok) {
-            const data = await response.json();
-
-            // Update temperature and humidity fields
-            document.getElementById('arduino1-temp').innerText = data.temperature ? `${data.temperature} °C` : '-';
-            document.getElementById('arduino1-humidity').innerText = data.humidity ? `${data.humidity} %` : '-';
-        } else {
-            document.getElementById('arduino1-temp').innerText = 'Error';
-            document.getElementById('arduino1-humidity').innerText = 'Error';
-        }
-    } catch (error) {
-        document.getElementById('arduino1-temp').innerText = 'Connection error';
-        document.getElementById('arduino1-humidity').innerText = 'Connection error';
-    }
-}
-
-async function fetchStatus() {
-    try {
-        const response = await fetch('http://192.168.0.37:8080/status'); // Fetch status data
-        if (response.ok) {
-            const data = await response.json();
-
-            // Update LED status
-            document.getElementById('arduino1-led').innerText = data.led || 'Unknown';
-        } else {
-            document.getElementById('arduino1-led').innerText = 'Error';
-        }
-    } catch (error) {
-        document.getElementById('arduino1-led').innerText = 'Connection error';
-    }
-}
-
-async function fetchTemperature() {
-    try {
-        const response = await fetch('/api/temperature'); // Fetch temperature data
-        if (response.ok) {
-            const data = await response.json();
-            document.getElementById('arduino1-temp').innerText = data.temperature ? `${data.temperature} °C` : '-';
-        } else {
-            document.getElementById('arduino1-temp').innerText = 'Error';
-        }
-    } catch (error) {
-        document.getElementById('arduino1-temp').innerText = 'Connection error';
-    }
-}
-
-// Call fetchSensorData and fetchStatus periodically to update the values
-setInterval(fetchSensorData, 5000); // Update sensor data every 5 seconds
-setInterval(fetchStatus, 5000); // Update status every 5 seconds
-setInterval(fetchTemperature, 5000); // Update temperature every 5 seconds
+// Fetch initial status and set up periodic updates
+fetchArduino1Status();
+fetchArduino3Status();
+setInterval(fetchArduino1Status, 5000);
+setInterval(fetchArduino3Status, 5000);
