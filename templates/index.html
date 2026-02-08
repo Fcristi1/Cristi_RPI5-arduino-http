@@ -1,41 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arduino Control</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <script src="/static/script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arduino Status Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .card h2 {
+      margin-top: 0;
+    }
+    .status {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <h1>Arduino Control Dashboard</h1>
+  <h1>Arduino Status Dashboard</h1>
 
-    <div id="arduino-d1-details">
-        <h2>Arduino1 D1 ESP8266</h2>
-        <p id="d1-status">Loading...</p>
-    </div>
+  <div class="card" id="arduino1">
+    <h2>Arduino 1</h2>
+    <p>Status: <span class="status" id="arduino1-status">Loading...</span></p>
+    <p>Built-in LED: <span id="arduino1-led">Loading...</span></p>
+    <p>Temperature: <span id="arduino1-temp">Loading...</span> °C</p>
+    <p>Humidity: <span id="arduino1-humidity">Loading...</span> %</p>
+  </div>
 
-    <div id="arduino-nodemcu-details">
-        <h2>Arduino3 NodeMCU ESP8266</h2>
-        <p id="nodemcu-status">Loading...</p>
+  <div class="card" id="arduino3">
+    <h2>Arduino 3</h2>
+    <p>Status: <span class="status" id="arduino3-status">Loading...</span></p>
+    <p>Built-in LED: <span id="arduino3-led">Loading...</span></p>
+    <p>MH Sensor Digital: <span id="arduino3-mh-digital">Loading...</span></p>
+    <p>MH Sensor Analog: <span id="arduino3-mh-analog">Loading...</span></p>
+    <p>Relay 1: <span id="arduino3-relay1">Loading...</span></p>
+    <p>Relay 2: <span id="arduino3-relay2">Loading...</span></p>
+  </div>
 
-        <h3>Built-in LED</h3>
-        <button onclick="toggleNodeMCULed()">Toggle LED</button>
+  <script>
+    async function fetchArduino1Data() {
+      try {
+        const response = await fetch('http://192.168.0.161/status');
+        const data = await response.json();
+        document.getElementById('arduino1-status').textContent = 'Connected';
+        document.getElementById('arduino1-led').textContent = data.builtin_led;
+        document.getElementById('arduino1-temp').textContent = data.temperature;
+        document.getElementById('arduino1-humidity').textContent = data.humidity;
+      } catch (error) {
+        document.getElementById('arduino1-status').textContent = 'Disconnected';
+      }
+    }
 
-        <h3>Relay Board</h3>
-        <p>Channel 1: <span id="relay1-status">Loading...</span></p>
-        <p>Channel 2: <span id="relay2-status">Loading...</span></p>
-        <button onclick="toggleRelay(1)">Toggle Channel 1</button>
-        <button onclick="toggleRelay(2)">Toggle Channel 2</button>
-    </div>
+    async function fetchArduino3Data() {
+      try {
+        const statusResponse = await fetch('http://192.168.0.162/status');
+        const mhDigitalResponse = await fetch('http://192.168.0.162/mh/digital');
+        const mhAnalogResponse = await fetch('http://192.168.0.162/mh/analog');
+        const relay1Response = await fetch('http://192.168.0.162/relay1/on');
+        const relay2Response = await fetch('http://192.168.0.162/relay2/on');
 
-    <div id="relay-status">
-        <h2>Relay Channels (NodeMCU)</h2>
-        <p>Channel 1: <span id="channel1-status">Loading...</span></p>
-        <p>Channel 2: <span id="channel2-status">Loading...</span></p>
-    </div>
+        const statusData = await statusResponse.json();
+        const mhDigitalData = await mhDigitalResponse.json();
+        const mhAnalogData = await mhAnalogResponse.json();
 
-    <button onclick="toggleChannel(1)">Toggle Channel 1</button>
-    <button onclick="toggleChannel(2)">Toggle Channel 2</button>
+        document.getElementById('arduino3-status').textContent = 'Connected';
+        document.getElementById('arduino3-led').textContent = statusData.builtin_led;
+        document.getElementById('arduino3-mh-digital').textContent = mhDigitalData.digital;
+        document.getElementById('arduino3-mh-analog').textContent = mhAnalogData.analog;
+        document.getElementById('arduino3-relay1').textContent = 'ON';
+        document.getElementById('arduino3-relay2').textContent = 'ON';
+      } catch (error) {
+        document.getElementById('arduino3-status').textContent = 'Disconnected';
+      }
+    }
+
+    function updateData() {
+      fetchArduino1Data();
+      fetchArduino3Data();
+    }
+
+    setInterval(updateData, 5000); // Update every 5 seconds
+    updateData();
+  </script>
 </body>
 </html>
