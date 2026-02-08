@@ -50,7 +50,7 @@ def get_arduino_status():
                 "builtin_led": data.get("builtin_led", "OFF"),
                 "button": data.get("button", "RELEASED"),
                 "ip": data.get("ip", "Unknown"),
-                "connected": True,
+                "connected": data.get("builtin_led", "OFF") == "ON",  # Online if Built-in LED is ON
                 "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
             print("Successfully fetched status from Arduino 1:", current_status)
