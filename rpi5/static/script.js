@@ -110,21 +110,18 @@ function updateUI() {
  * Update connection status indicator
  */
 function updateConnectionStatus(connected) {
-    const dot = document.getElementById('connectionDot');
-    const statusText = document.getElementById('statusText');
-    const statusInfo = document.getElementById('statusInfo');
-    const arduinoStatus = document.getElementById('arduinoStatus');
-    
+    const connectionStatus = document.getElementById('arduino1Connection');
+    const ipAddress = document.getElementById('arduino1Ip');
+    const lastUpdate = document.getElementById('arduino1LastUpdate');
+
     if (connected) {
-        dot.className = 'status-dot connected';
-        statusText.textContent = 'Connected';
-        statusInfo.textContent = 'Arduino D1 is online';
-        arduinoStatus.innerHTML = 'Arduino: <span class="online">Online</span>';
+        connectionStatus.textContent = 'Connected';
+        ipAddress.textContent = currentStatus.ip || 'Unknown';
+        lastUpdate.textContent = currentStatus.last_update || '-';
     } else {
-        dot.className = 'status-dot disconnected';
-        statusText.textContent = 'Disconnected';
-        statusInfo.textContent = 'Unable to connect to Arduino';
-        arduinoStatus.innerHTML = 'Arduino: <span class="offline">Offline</span>';
+        connectionStatus.textContent = 'Disconnected';
+        ipAddress.textContent = '-';
+        lastUpdate.textContent = '-';
     }
 }
 
@@ -344,14 +341,23 @@ function updateArduino3Status() {
             return response.json();
         })
         .then(data => {
-            arduino3Status = data;
+            arduino3Status.connected = data.builtin_led === 'ON';
+            arduino3Status.ip = data.ip || 'Unknown';
+            arduino3Status.last_update = data.last_update || '-';
+
+            // Update Relay channels
+            const relay1Status = document.getElementById('relay1Status');
+            const relay2Status = document.getElementById('relay2Status');
+
+            relay1Status.textContent = data.relay_channel_1 || 'OFF';
+            relay2Status.textContent = data.relay_channel_2 || 'OFF';
+
             updateArduino3UI();
         })
         .catch(error => {
             console.error('Error fetching Arduino 3 status:', error);
-            document.getElementById('arduino3Connection').innerText = 'Disconnected';
-            document.getElementById('arduino3Ip').innerText = '-';
-            document.getElementById('arduino3LastUpdate').innerText = '-';
+            arduino3Status.connected = false;
+            updateArduino3UI();
         });
 }
 
@@ -359,9 +365,19 @@ function updateArduino3Status() {
  * Update UI elements with Arduino 3 status
  */
 function updateArduino3UI() {
-    document.getElementById('arduino3Connection').innerText = arduino3Status.connected ? 'Connected' : 'Disconnected';
-    document.getElementById('arduino3Ip').innerText = arduino3Status.ip || '-';
-    document.getElementById('arduino3LastUpdate').innerText = arduino3Status.last_update || '-';
+    const connectionStatus = document.getElementById('arduino3Connection');
+    const ipAddress = document.getElementById('arduino3Ip');
+    const lastUpdate = document.getElementById('arduino3LastUpdate');
+
+    if (arduino3Status.connected) {
+        connectionStatus.textContent = 'Connected';
+        ipAddress.textContent = arduino3Status.ip;
+        lastUpdate.textContent = arduino3Status.last_update;
+    } else {
+        connectionStatus.textContent = 'Disconnected';
+        ipAddress.textContent = '-';
+        lastUpdate.textContent = '-';
+    }
 }
 
 /**

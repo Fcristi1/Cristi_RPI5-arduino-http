@@ -82,6 +82,21 @@
                 <p class="info-text">Real-time sensor data from Arduino</p>
             </section>
 
+            <!-- Relay Control -->
+            <section class="card control-card">
+                <h2>Arduino 3 (NodeMCU) Relay Control</h2>
+                <div class="relay-display">
+                    <p><strong>Relay Channel 1:</strong> <span id="relay1Status">OFF</span></p>
+                    <p><strong>Relay Channel 2:</strong> <span id="relay2Status">OFF</span></p>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="toggleRelay(1, true)">Turn ON Relay 1</button>
+                    <button class="btn btn-danger" onclick="toggleRelay(1, false)">Turn OFF Relay 1</button>
+                    <button class="btn btn-primary" onclick="toggleRelay(2, true)">Turn ON Relay 2</button>
+                    <button class="btn btn-danger" onclick="toggleRelay(2, false)">Turn OFF Relay 2</button>
+                </div>
+            </section>
+
             <!-- Settings -->
             <section class="card settings-card">
                 <h2>Settings</h2>
