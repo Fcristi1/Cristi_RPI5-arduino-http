@@ -281,9 +281,9 @@ if __name__ == '__main__':
     
     # Initial connection test
     if get_arduino_status():
-        print(f"✓ Connected to Arduino at {ARDUINO_IP}")
+        print(f"✓ Connected to Arduino at {ARDUINO_1_IP}")
     else:
-        print(f"✗ Could not connect to Arduino at {ARDUINO_IP}")
+        print(f"✗ Could not connect to Arduino at {ARDUINO_1_IP}")
         print(f"  You can change the IP in the web interface settings")
     
     print(f"{'='*50}\n")
