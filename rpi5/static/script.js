@@ -301,6 +301,31 @@ function updateArduinoIp() {
 }
 
 /**
+ * Fetch and update sensor data
+ */
+function updateSensorData() {
+    fetch('/api/sensor')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch sensor data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('temperature').textContent = data.temperature || '-';
+            document.getElementById('humidity').textContent = data.humidity || '-';
+        })
+        .catch(error => {
+            console.error('Error fetching sensor data:', error);
+            document.getElementById('temperature').textContent = '-';
+            document.getElementById('humidity').textContent = '-';
+        });
+}
+
+// Update sensor data every 2 seconds
+setInterval(updateSensorData, 2000);
+
+/**
  * Show notification (simple version)
  * In production, use a proper notification library
  */

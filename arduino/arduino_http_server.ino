@@ -3,7 +3,7 @@
 #include <DHT.h>
 
 // WiFi credentials
-const char* ssid = "Mimimimi1";
+const char* ssid = "Mimi";
 const char* password = "mimimimi1";
 
 // Server on port 8080
