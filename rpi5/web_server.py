@@ -140,12 +140,16 @@ def get_nodemcu_status():
 def toggle_arduino1_led():
     """Toggle Arduino 1 LED"""
     try:
+        print(f"[DEBUG] Attempting to toggle LED on {ARDUINO_1_BASE_URL}/led/toggle")
         response = requests.get(f"{ARDUINO_1_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        print(f"[DEBUG] Arduino response status: {response.status_code}")
         if response.status_code == 200:
             return jsonify(response.json())
         else:
+            print(f"[ERROR] Arduino returned error: {response.status_code}")
             return jsonify({"error": "Failed to toggle LED"}), 500
     except Exception as e:
+        print(f"[ERROR] Exception while toggling LED: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/arduino3/led/toggle', methods=['POST'])

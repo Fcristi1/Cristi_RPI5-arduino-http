@@ -1,18 +1,24 @@
+console.log('[INIT] Script loaded');
+
 async function fetchArduino1Status() {
     try {
         const response = await fetch('/api/arduino1/status');
+        console.log('[DEBUG] Fetching Arduino 1 status. Response status:', response.status);
+        
         if (response.ok) {
             const data = await response.json();
+            console.log('[DEBUG] Arduino 1 data:', data);
             document.getElementById('arduino1-status').innerText = 'Connected';
             document.getElementById('arduino1-led').innerText = data.led || 'OFF';
             document.getElementById('arduino1-temp').innerText = data.temperature || '-';
             document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
         } else {
             document.getElementById('arduino1-status').innerText = 'Disconnected';
+            console.warn('[WARN] Arduino 1 status returned:', response.status);
         }
     } catch (error) {
         document.getElementById('arduino1-status').innerText = 'Disconnected';
-        console.error('Error fetching Arduino 1 status:', error);
+        console.error('[ERROR] Error fetching Arduino 1 status:', error);
     }
 }
 
@@ -35,16 +41,23 @@ async function fetchArduino3Status() {
 }
 
 async function toggleArduino1LED() {
+    console.log('[DEBUG] toggleArduino1LED called');
     try {
         const response = await fetch('/api/arduino1/led/toggle', { method: 'POST' });
+        console.log('[DEBUG] Response status:', response.status);
+        
         if (response.ok) {
+            const data = await response.json();
+            console.log('[DEBUG] Toggle response:', data);
             await fetchArduino1Status();
         } else {
-            alert('Failed to toggle Arduino 1 LED');
+            const error = await response.text();
+            console.error('[ERROR] Failed to toggle LED. Status:', response.status, 'Error:', error);
+            alert('Failed to toggle Arduino 1 LED: ' + response.status);
         }
     } catch (error) {
-        alert('Connection error');
-        console.error('Error toggling Arduino 1 LED:', error);
+        console.error('[ERROR] Connection error:', error);
+        alert('Connection error: ' + error.message);
     }
 }
 
