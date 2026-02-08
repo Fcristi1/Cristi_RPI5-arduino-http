@@ -141,11 +141,24 @@ def index():
     return render_template('index.html')
 
 @app.route('/api/status', methods=['GET'])
-def api_status():
-    """API endpoint: get current status for both Arduinos"""
+def get_status():
+    """Fetch the status of both Arduino 1 and Arduino 3."""
+    try:
+        # Fetch Arduino 1 status
+        arduino1_status = requests.get(f"{ARDUINO_1_BASE_URL}/status", timeout=REQUEST_TIMEOUT).json()
+    except Exception as e:
+        arduino1_status = {"error": str(e)}
+
+    try:
+        # Fetch Arduino 3 status
+        arduino3_status = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT).json()
+    except Exception as e:
+        arduino3_status = {"error": str(e)}
+
+    # Combine statuses
     return jsonify({
-        "arduino1": get_arduino1_status(),
-        "arduino3": get_arduino3_status()
+        "arduino1": arduino1_status,
+        "arduino3": arduino3_status
     })
 
 @app.route('/api/config', methods=['GET'])

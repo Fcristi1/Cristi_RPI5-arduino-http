@@ -544,3 +544,27 @@ setInterval(() => {
     updateArduino1Status();
     updateArduino3Status();
 }, 2000);
+
+// Fetch and update statuses for both Arduino 1 and Arduino 3
+function updateStatuses() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            // Update Arduino 1
+            const arduino1 = data.arduino1;
+            document.getElementById('arduino1Status').textContent = arduino1.error ? 'Disconnected' : 'Connected';
+            document.getElementById('arduino1LedStatus').textContent = arduino1.led || 'OFF';
+            document.getElementById('arduino1Temperature').textContent = `${arduino1.temperature || '-'} °C`;
+
+            // Update Arduino 3
+            const arduino3 = data.arduino3;
+            document.getElementById('arduino3Status').textContent = arduino3.error ? 'Disconnected' : 'Connected';
+            document.getElementById('arduino3LedStatus').textContent = arduino3.builtin_led || 'OFF';
+            document.getElementById('relayD0Status').textContent = arduino3.relay_channel_1 || 'OFF';
+            document.getElementById('relayD1Status').textContent = arduino3.relay_channel_2 || 'OFF';
+        })
+        .catch(error => console.error('Error fetching statuses:', error));
+}
+
+// Initialize real-time updates
+setInterval(updateStatuses, 2000);
