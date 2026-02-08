@@ -9,7 +9,7 @@ async function fetchArduino1Status() {
             const data = await response.json();
             console.log('[DEBUG] Arduino 1 data:', data);
             document.getElementById('arduino1-status').innerText = 'Connected';
-            document.getElementById('arduino1-led').innerText = data.led || 'OFF';
+            document.getElementById('arduino1-led').innerText = data.builtin_led || 'OFF';
             document.getElementById('arduino1-temp').innerText = data.temperature || '-';
             document.getElementById('arduino1-humidity').innerText = data.humidity || '-';
         } else {
@@ -33,12 +33,37 @@ async function fetchArduino3Status() {
             document.getElementById('arduino3-relay1').innerText = data.relay_channel_2 || 'OFF';
         } else {
             document.getElementById('arduino3-status').innerText = 'Disconnected';
+            document.getElementById('arduino3-led').innerText = 'N/A';
+            document.getElementById('arduino3-relay0').innerText = 'N/A';
+            document.getElementById('arduino3-relay1').innerText = 'N/A';
         }
     } catch (error) {
         document.getElementById('arduino3-status').innerText = 'Disconnected';
+        document.getElementById('arduino3-led').innerText = 'N/A';
+        document.getElementById('arduino3-relay0').innerText = 'N/A';
+        document.getElementById('arduino3-relay1').innerText = 'N/A';
         console.error('Error fetching Arduino 3 status:', error);
     }
 }
+
+async function fetchArduino3Mh() {
+    try {
+        const response = await fetch('/api/arduino3/mh');
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('arduino3-mh-digital').innerText = data.digital ?? 'N/A';
+            document.getElementById('arduino3-mh-analog').innerText = data.analog ?? 'N/A';
+        } else {
+            document.getElementById('arduino3-mh-digital').innerText = 'N/A';
+            document.getElementById('arduino3-mh-analog').innerText = 'N/A';
+        }
+    } catch (error) {
+        document.getElementById('arduino3-mh-digital').innerText = 'N/A';
+        document.getElementById('arduino3-mh-analog').innerText = 'N/A';
+        console.error('Error fetching Arduino 3 MH sensor:', error);
+    }
+}
+
 
 async function toggleArduino1LED() {
     console.log('[DEBUG] toggleArduino1LED called');
@@ -78,5 +103,7 @@ async function toggleArduino3LED() {
 // Fetch initial status and set up periodic updates
 fetchArduino1Status();
 fetchArduino3Status();
+fetchArduino3Mh();
 setInterval(fetchArduino1Status, 5000);
 setInterval(fetchArduino3Status, 5000);
+setInterval(fetchArduino3Mh, 5000);

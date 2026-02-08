@@ -26,87 +26,10 @@
         <button onclick="toggleArduino3LED()">Toggle Inner LED</button>
         <p>Relay D0: <span id="arduino3-relay0">-</span></p>
         <p>Relay D1: <span id="arduino3-relay1">-</span></p>
+        <p>MH Sensor Digital: <span id="arduino3-mh-digital">-</span></p>
+        <p>MH Sensor Analog: <span id="arduino3-mh-analog">-</span></p>
     </div>
 
     <script src="/static/script.js"></script>
-</body>
-</html>
-    <p>Relay D1: <span id="arduino3-relay2">Loading...</span></p>
-    <p>MH Sensor Digital: <span id="arduino3-mh-digital">Loading...</span></p>
-    <p>MH Sensor Analog: <span id="arduino3-mh-analog">Loading...</span></p>
-  </div>
-
-  <script>
-    async function fetchArduino1Data() {
-      try {
-        const response = await fetch('http://192.168.0.37/status');
-        const data = await response.json();
-        document.getElementById('arduino1-status').textContent = 'Connected';
-        document.getElementById('arduino1-led').textContent = data.builtin_led;
-        document.getElementById('arduino1-temp').textContent = data.temperature || '-';
-        document.getElementById('arduino1-humidity').textContent = data.humidity || '-';
-      } catch (error) {
-        document.getElementById('arduino1-status').textContent = 'Disconnected';
-        document.getElementById('arduino1-led').textContent = 'N/A';
-        document.getElementById('arduino1-temp').textContent = '-';
-        document.getElementById('arduino1-humidity').textContent = '-';
-      }
-    }
-
-    async function fetchArduino3Data() {
-      try {
-        const statusResponse = await fetch('http://192.168.0.161/status');
-        const mhDigitalResponse = await fetch('http://192.168.0.161/mh/digital');
-        const mhAnalogResponse = await fetch('http://192.168.0.161/mh/analog');
-
-        const statusData = await statusResponse.json();
-        const mhDigitalData = await mhDigitalResponse.json();
-        const mhAnalogData = await mhAnalogResponse.json();
-
-        document.getElementById('arduino3-status').textContent = 'Connected';
-        document.getElementById('arduino3-led').textContent = statusData.builtin_led;
-        document.getElementById('arduino3-relay1').textContent = statusData.relay1;
-        document.getElementById('arduino3-relay2').textContent = statusData.relay2;
-        document.getElementById('arduino3-mh-digital').textContent = mhDigitalData.digital;
-        document.getElementById('arduino3-mh-analog').textContent = mhAnalogData.analog;
-      } catch (error) {
-        console.error('Error fetching Arduino 3 data:', error);
-        document.getElementById('arduino3-status').textContent = 'Disconnected';
-        document.getElementById('arduino3-led').textContent = 'N/A';
-        document.getElementById('arduino3-relay1').textContent = 'N/A';
-        document.getElementById('arduino3-relay2').textContent = 'N/A';
-        document.getElementById('arduino3-mh-digital').textContent = 'Error';
-        document.getElementById('arduino3-mh-analog').textContent = 'Error';
-      }
-    }
-
-    async function toggleArduino1LED() {
-      try {
-        await fetch('http://192.168.0.37/builtin/toggle');
-        fetchArduino1Data();
-      } catch (error) {
-        console.error('Failed to toggle Arduino 1 LED');
-      }
-    }
-
-    async function toggleArduino3LED() {
-      try {
-        const response = await fetch('http://192.168.0.161/builtin/toggle');
-        const result = await response.json();
-        console.log(result.status);
-        fetchArduino3Data();
-      } catch (error) {
-        console.error('Failed to toggle Arduino 3 LED:', error);
-      }
-    }
-
-    function updateData() {
-      fetchArduino1Data();
-      fetchArduino3Data();
-    }
-
-    setInterval(updateData, 5000); // Update every 5 seconds
-    updateData();
-  </script>
 </body>
 </html>

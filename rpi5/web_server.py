@@ -138,18 +138,18 @@ def get_nodemcu_status():
 
 @app.route('/api/arduino1/led/toggle', methods=['POST'])
 def toggle_arduino1_led():
-    """Toggle Arduino 1 LED"""
+    """Toggle Arduino 1 built-in LED"""
     try:
-        print(f"[DEBUG] Attempting to toggle LED on {ARDUINO_1_BASE_URL}/led/toggle")
-        response = requests.get(f"{ARDUINO_1_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        print(f"[DEBUG] Attempting to toggle built-in LED on {ARDUINO_1_BASE_URL}/builtin/toggle")
+        response = requests.get(f"{ARDUINO_1_BASE_URL}/builtin/toggle", timeout=REQUEST_TIMEOUT)
         print(f"[DEBUG] Arduino response status: {response.status_code}")
         if response.status_code == 200:
             return jsonify(response.json())
         else:
             print(f"[ERROR] Arduino returned error: {response.status_code}")
-            return jsonify({"error": "Failed to toggle LED"}), 500
+            return jsonify({"error": "Failed to toggle built-in LED"}), 500
     except Exception as e:
-        print(f"[ERROR] Exception while toggling LED: {str(e)}")
+        print(f"[ERROR] Exception while toggling built-in LED: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/arduino3/led/toggle', methods=['POST'])
@@ -192,6 +192,25 @@ def arduino3_status():
             return jsonify({"error": "Failed to fetch status"}), 500
     except Exception as e:
         return jsonify({"error": str(e), "connected": False}), 500
+
+@app.route('/api/arduino3/mh', methods=['GET'])
+def arduino3_mh():
+    """Fetch MH sensor data from Arduino 3"""
+    try:
+        digital_response = requests.get(f"{ARDUINO_3_BASE_URL}/mh/digital", timeout=REQUEST_TIMEOUT)
+        analog_response = requests.get(f"{ARDUINO_3_BASE_URL}/mh/analog", timeout=REQUEST_TIMEOUT)
+
+        if digital_response.status_code == 200 and analog_response.status_code == 200:
+            digital_data = digital_response.json()
+            analog_data = analog_response.json()
+            return jsonify({
+                "digital": digital_data.get("digital", "N/A"),
+                "analog": analog_data.get("analog", "N/A")
+            })
+
+        return jsonify({"error": "Failed to fetch MH sensor"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/status', methods=['GET'])
 def get_status():
