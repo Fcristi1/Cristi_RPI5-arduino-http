@@ -53,13 +53,15 @@ def get_arduino_status():
                 "connected": True,
                 "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
+            print("Successfully fetched status from Arduino 1:", current_status)
             return True
         else:
             current_status["connected"] = False
+            print(f"Failed to fetch status from Arduino 1: HTTP {response.status_code}")
             return False
     except Exception as e:
         current_status["connected"] = False
-        print(f"Error fetching status: {e}")
+        print(f"Error fetching status from Arduino 1: {e}")
         return False
 
 def continuous_status_update():
