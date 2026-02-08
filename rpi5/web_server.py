@@ -274,7 +274,7 @@ if __name__ == '__main__':
     print(f"\n{'='*50}")
     print(f"RPI5 Web Interface - Arduino D1 Control")
     print(f"{'='*50}")
-    print(f"Arduino IP configured as: {ARDUINO_IP}:{ARDUINO_PORT}")
+    print(f"Arduino IP configured as: {ARDUINO_1_IP}:{ARDUINO_PORT}")
     print(f"Web interface will be available at: http://<RPI5_IP>:5000")
     print(f"Access from PC: http://192.168.x.x:5000 (replace with your RPI5 IP)")
     print(f"Press Ctrl+C to stop the server\n")
