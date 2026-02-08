@@ -42,6 +42,61 @@ void toggleChannel2() {
   server.send(200, "text/plain", channel2Status ? "Channel 2 ON" : "Channel 2 OFF");
 }
 
+// Function to handle status endpoint
+void handleStatus() {
+  String response = "{";
+  response += "\"relay1\":\"" + String(channel1Status ? "ON" : "OFF") + "\",";
+  response += "\"relay2\":\"" + String(channel2Status ? "ON" : "OFF") + "\",";
+  response += "\"builtin_led\":\"" + String(digitalRead(LED_BUILTIN) == LOW ? "ON" : "OFF") + "\"";
+  response += "}";
+  server.send(200, "application/json", response);
+}
+
+// Function to turn built-in LED ON
+void turnBuiltinLedOn() {
+  digitalWrite(LED_BUILTIN, LOW); // Active LOW
+  server.send(200, "application/json", "{\"status\":\"Built-in LED turned ON\"}");
+}
+
+// Function to turn built-in LED OFF
+void turnBuiltinLedOff() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  server.send(200, "application/json", "{\"status\":\"Built-in LED turned OFF\"}");
+}
+
+// Function to toggle built-in LED
+void toggleBuiltinLed() {
+  bool isOn = (digitalRead(LED_BUILTIN) == LOW);
+  digitalWrite(LED_BUILTIN, isOn ? HIGH : LOW);
+  String state = isOn ? "OFF" : "ON";
+  String response = "{\"status\":\"Built-in LED toggled to " + state + "\"}";
+  server.send(200, "application/json", response);
+}
+
+// Function to turn Relay 1 (D0) ON
+void turnRelay1On() {
+  digitalWrite(relay1Pin, HIGH);
+  server.send(200, "application/json", "{\"status\":\"Relay 1 turned ON\"}");
+}
+
+// Function to turn Relay 1 (D0) OFF
+void turnRelay1Off() {
+  digitalWrite(relay1Pin, LOW);
+  server.send(200, "application/json", "{\"status\":\"Relay 1 turned OFF\"}");
+}
+
+// Function to turn Relay 2 (D1) ON
+void turnRelay2On() {
+  digitalWrite(relay2Pin, HIGH);
+  server.send(200, "application/json", "{\"status\":\"Relay 2 turned ON\"}");
+}
+
+// Function to turn Relay 2 (D1) OFF
+void turnRelay2Off() {
+  digitalWrite(relay2Pin, LOW);
+  server.send(200, "application/json", "{\"status\":\"Relay 2 turned OFF\"}");
+}
+
 void setup() {
   // Start serial communication
   Serial.begin(115200);
@@ -68,6 +123,14 @@ void setup() {
   server.on("/", handleRoot);
   server.on("/toggleChannel1", toggleChannel1);
   server.on("/toggleChannel2", toggleChannel2);
+  server.on("/status", handleStatus);
+  server.on("/builtin/on", turnBuiltinLedOn);
+  server.on("/builtin/off", turnBuiltinLedOff);
+  server.on("/builtin/toggle", toggleBuiltinLed);
+  server.on("/relay1/on", turnRelay1On);
+  server.on("/relay1/off", turnRelay1Off);
+  server.on("/relay2/on", turnRelay2On);
+  server.on("/relay2/off", turnRelay2Off);
 
   // Start the server
   server.begin();
