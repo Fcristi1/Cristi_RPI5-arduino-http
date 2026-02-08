@@ -87,6 +87,16 @@ def get_nodemcu_status():
     except Exception as e:
         return f"Error: {e}"
 
+# Check connection to Arduino NodeMCU
+try:
+    response = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
+    if response.status_code == 200:
+        print(f"✓ Connected to Arduino NodeMCU at {ARDUINO_3_IP}")
+    else:
+        print(f"✗ Failed to connect to Arduino NodeMCU at {ARDUINO_3_IP}")
+except Exception as e:
+    print(f"✗ Error connecting to Arduino NodeMCU at {ARDUINO_3_IP}: {e}")
+
 @app.route('/')
 def index():
     """Serve main page"""
