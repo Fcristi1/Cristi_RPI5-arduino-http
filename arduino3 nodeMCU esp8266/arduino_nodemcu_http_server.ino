@@ -84,24 +84,28 @@ void toggleBuiltinLed() {
 
 // Function to turn Relay 1 (D0) ON
 void turnRelay1On() {
+  channel1Status = true;
   digitalWrite(relay1Pin, HIGH);
   server.send(200, "application/json", "{\"status\":\"Relay 1 turned ON\"}");
 }
 
 // Function to turn Relay 1 (D0) OFF
 void turnRelay1Off() {
+  channel1Status = false;
   digitalWrite(relay1Pin, LOW);
   server.send(200, "application/json", "{\"status\":\"Relay 1 turned OFF\"}");
 }
 
 // Function to turn Relay 2 (D1) ON
 void turnRelay2On() {
+  channel2Status = true;
   digitalWrite(relay2Pin, HIGH);
   server.send(200, "application/json", "{\"status\":\"Relay 2 turned ON\"}");
 }
 
 // Function to turn Relay 2 (D1) OFF
 void turnRelay2Off() {
+  channel2Status = false;
   digitalWrite(relay2Pin, LOW);
   server.send(200, "application/json", "{\"status\":\"Relay 2 turned OFF\"}");
 }
