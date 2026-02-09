@@ -6,7 +6,7 @@ Run on RPI5: python3 rpi5/web_server.py
 Access from PC: http://<RPI5_IP>:5000
 """
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 import requests
 import json
 import threading
@@ -15,6 +15,11 @@ import os
 
 # Configure Flask to serve templates from parent directory
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
+
+# Simple single-user auth
+VALID_USERNAME = "fcp"
+VALID_PASSWORD = "88888888"
 
 # Arduino configuration for renamed folders
 ARDUINO_1_IP = "192.168.0.37"  # Arduino 1 (D1 ESP8266)
@@ -77,6 +82,20 @@ def continuous_status_update():
 # Start background thread
 status_thread = threading.Thread(target=continuous_status_update, daemon=True)
 status_thread.start()
+
+
+@app.before_request
+def require_login():
+    """Redirect to login page if not authenticated."""
+    # Allow login page, static assets, and health checks before auth
+    open_endpoints = {
+        'login', 'static'
+    }
+    if request.endpoint in open_endpoints or request.path.startswith('/static/'):
+        return None
+    if not session.get('logged_in'):
+        return redirect(url_for('login', next=request.path))
+    return None
 
 def get_arduino1_status():
     """Fetch status from Arduino 1 (D1)"""
@@ -156,6 +175,25 @@ def toggle_arduino1_led():
     except Exception as e:
         print(f"[ERROR] Exception while toggling built-in LED: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Simple login page for single user."""
+    if request.method == 'POST':
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        if username == VALID_USERNAME and password == VALID_PASSWORD:
+            session['logged_in'] = True
+            return redirect(request.args.get('next') or url_for('index'))
+        return render_template('login.html', error='Invalid credentials')
+    return render_template('login.html', error=None)
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
 
 @app.route('/api/arduino3/led/toggle', methods=['POST'])
 def toggle_arduino3_led():
