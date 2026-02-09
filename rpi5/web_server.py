@@ -20,10 +20,14 @@ app = Flask(__name__, template_folder='../templates', static_folder='../static')
 ARDUINO_1_IP = "192.168.0.37"  # Arduino 1 (D1 ESP8266)
 ARDUINO_3_IP = "192.168.0.161"  # Arduino 3 (NodeMCU ESP8266)
 
-ARDUINO_PORT = 8080
+# Use distinct ports: Arduino 1 listens on 8080, Arduino 3 (NodeMCU) on the default HTTP port 80
+ARDUINO_1_PORT = 8080
+ARDUINO_3_PORT = 80
 
-ARDUINO_1_BASE_URL = f"http://{ARDUINO_1_IP}:{ARDUINO_PORT}"
-ARDUINO_3_BASE_URL = f"http://{ARDUINO_3_IP}:{ARDUINO_PORT}"
+ARDUINO_1_BASE_URL = f"http://{ARDUINO_1_IP}:{ARDUINO_1_PORT}"
+ARDUINO_3_BASE_URL = f"http://{ARDUINO_3_IP}:{ARDUINO_3_PORT}"
+# Legacy variable kept for the config endpoint (assumes Arduino 1)
+ARDUINO_PORT = ARDUINO_1_PORT
 REQUEST_TIMEOUT = 5
 
 # Global status
@@ -109,10 +113,11 @@ def get_arduino3_status():
         )
         if response.status_code == 200:
             data = response.json()
+            # Normalize keys coming from NodeMCU sketch
             return {
                 "builtin_led": data.get("builtin_led", "OFF"),
-                "relay_channel_1": data.get("relay_channel_1", "OFF"),
-                "relay_channel_2": data.get("relay_channel_2", "OFF"),
+                "relay_channel_1": data.get("relay1", data.get("relay_channel_1", "OFF")),
+                "relay_channel_2": data.get("relay2", data.get("relay_channel_2", "OFF")),
                 "ip": ARDUINO_3_IP,
                 "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
@@ -128,7 +133,7 @@ def get_arduino3_status():
 def get_nodemcu_status():
     """Fetch the status of Arduino 3 (NodeMCU)."""
     try:
-        response = requests.get("http://192.168.0.161:8080/status", timeout=5)
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=5)
         if response.status_code == 200:
             return response.json()
         else:
@@ -156,7 +161,7 @@ def toggle_arduino1_led():
 def toggle_arduino3_led():
     """Toggle Arduino 3 LED"""
     try:
-        response = requests.get(f"{ARDUINO_3_BASE_URL}/led/toggle", timeout=REQUEST_TIMEOUT)
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/builtin/toggle", timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
             return jsonify(response.json())
         else:
@@ -200,9 +205,34 @@ def arduino3_status():
     try:
         response = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
         if response.status_code == 200:
-            return jsonify(response.json())
+            data = response.json()
+            return jsonify({
+                "builtin_led": data.get("builtin_led", "OFF"),
+                "relay_channel_1": data.get("relay1", data.get("relay_channel_1", "OFF")),
+                "relay_channel_2": data.get("relay2", data.get("relay_channel_2", "OFF")),
+                "ip": ARDUINO_3_IP,
+                "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
         else:
             return jsonify({"error": "Failed to fetch status"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e), "connected": False}), 500
+
+@app.route('/api/nodemcu/status', methods=['GET'])
+def nodemcu_status():
+    """Fetch Arduino 3 status for legacy frontend endpoint."""
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            data = response.json()
+            return jsonify({
+                "builtin_led": data.get("builtin_led", "OFF"),
+                "relay_channel_1": data.get("relay1", data.get("relay_channel_1", "OFF")),
+                "relay_channel_2": data.get("relay2", data.get("relay_channel_2", "OFF")),
+                "ip": ARDUINO_3_IP,
+                "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
+        return jsonify({"error": "Failed to fetch status"}), 500
     except Exception as e:
         return jsonify({"error": str(e), "connected": False}), 500
 
@@ -236,7 +266,14 @@ def get_status():
 
     try:
         # Fetch Arduino 3 status
-        arduino3_status = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT).json()
+        raw_arduino3 = requests.get(f"{ARDUINO_3_BASE_URL}/status", timeout=REQUEST_TIMEOUT).json()
+        arduino3_status = {
+            "builtin_led": raw_arduino3.get("builtin_led", "OFF"),
+            "relay_channel_1": raw_arduino3.get("relay1", raw_arduino3.get("relay_channel_1", "OFF")),
+            "relay_channel_2": raw_arduino3.get("relay2", raw_arduino3.get("relay_channel_2", "OFF")),
+            "ip": ARDUINO_3_IP,
+            "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
     except Exception as e:
         arduino3_status = {"error": str(e)}
 
