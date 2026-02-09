@@ -255,6 +255,46 @@ def arduino3_mh():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/arduino3/relay1/on', methods=['POST'])
+def arduino3_relay1_on():
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/relay1/on", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        return jsonify({"error": "Failed to turn Relay 1 ON"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/arduino3/relay1/off', methods=['POST'])
+def arduino3_relay1_off():
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/relay1/off", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        return jsonify({"error": "Failed to turn Relay 1 OFF"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/arduino3/relay2/on', methods=['POST'])
+def arduino3_relay2_on():
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/relay2/on", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        return jsonify({"error": "Failed to turn Relay 2 ON"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/arduino3/relay2/off', methods=['POST'])
+def arduino3_relay2_off():
+    try:
+        response = requests.get(f"{ARDUINO_3_BASE_URL}/relay2/off", timeout=REQUEST_TIMEOUT)
+        if response.status_code == 200:
+            return jsonify(response.json())
+        return jsonify({"error": "Failed to turn Relay 2 OFF"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/status', methods=['GET'])
 def get_status():
     """Fetch the status of both Arduino 1 and Arduino 3."""

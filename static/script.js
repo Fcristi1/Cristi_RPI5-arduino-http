@@ -100,6 +100,62 @@ async function toggleArduino3LED() {
     }
 }
 
+async function relay1On() {
+    try {
+        const response = await fetch('/api/arduino3/relay1/on', { method: 'POST' });
+        if (response.ok) {
+            await fetchArduino3Status();
+        } else {
+            alert('Failed to turn Relay D0 ON');
+        }
+    } catch (error) {
+        alert('Connection error');
+        console.error('Error turning Relay D0 ON:', error);
+    }
+}
+
+async function relay1Off() {
+    try {
+        const response = await fetch('/api/arduino3/relay1/off', { method: 'POST' });
+        if (response.ok) {
+            await fetchArduino3Status();
+        } else {
+            alert('Failed to turn Relay D0 OFF');
+        }
+    } catch (error) {
+        alert('Connection error');
+        console.error('Error turning Relay D0 OFF:', error);
+    }
+}
+
+async function relay2On() {
+    try {
+        const response = await fetch('/api/arduino3/relay2/on', { method: 'POST' });
+        if (response.ok) {
+            await fetchArduino3Status();
+        } else {
+            alert('Failed to turn Relay D1 ON');
+        }
+    } catch (error) {
+        alert('Connection error');
+        console.error('Error turning Relay D1 ON:', error);
+    }
+}
+
+async function relay2Off() {
+    try {
+        const response = await fetch('/api/arduino3/relay2/off', { method: 'POST' });
+        if (response.ok) {
+            await fetchArduino3Status();
+        } else {
+            alert('Failed to turn Relay D1 OFF');
+        }
+    } catch (error) {
+        alert('Connection error');
+        console.error('Error turning Relay D1 OFF:', error);
+    }
+}
+
 // Fetch initial status and set up periodic updates
 fetchArduino1Status();
 fetchArduino3Status();
