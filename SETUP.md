@@ -66,6 +66,34 @@ pip install -r rpi5/requirements.txt
 python3 rpi5/web_server.py
 ```
 
+### Run Web Server and ngrok as services (survive SSH logout)
+1. Copy the provided unit files to systemd (on the RPi):
+  ```bash
+  sudo cp "rpi5 services/arduino-web.service" /etc/systemd/system/
+  sudo cp "rpi5 services/ngrok-arduino.service" /etc/systemd/system/
+  ```
+2. Edit the ngrok service to add your token:
+  ```bash
+  sudo nano /etc/systemd/system/ngrok-arduino.service
+  ```
+  Replace `<your_token>` in `Environment=NGROK_AUTHTOKEN=<your_token>`.
+3. Reload and enable both services:
+  ```bash
+  sudo systemctl daemon-reload
+  sudo systemctl enable arduino-web ngrok-arduino
+  sudo systemctl start arduino-web ngrok-arduino
+  ```
+4. Check status and find the public ngrok URL:
+  ```bash
+  sudo systemctl status arduino-web ngrok-arduino
+  journalctl -u ngrok-arduino -f
+  ```
+  The journal log shows the https URL exposed by ngrok.
+
+Service files are included at:
+- [rpi5 services/arduino-web.service](rpi5%20services/arduino-web.service)
+- [rpi5 services/ngrok-arduino.service](rpi5%20services/ngrok-arduino.service)
+
 You'll see output like:
 ```
 ==================================================

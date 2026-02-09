@@ -1,0 +1,14 @@
+[Unit]
+Description=ngrok tunnel for Arduino UI
+After=network-online.target arduino-web.service
+Wants=network-online.target arduino-web.service
+
+[Service]
+Environment=NGROK_AUTHTOKEN=<your_token>
+ExecStart=/usr/bin/ngrok http 5000
+WorkingDirectory=/home/pi
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
