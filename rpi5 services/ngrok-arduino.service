@@ -5,10 +5,10 @@ Wants=network-online.target arduino-web.service
 
 [Service]
 Environment=NGROK_AUTHTOKEN=<your_token>
-ExecStart=/usr/bin/ngrok http 5000
-WorkingDirectory=/home/pi
+ExecStart=/usr/local/bin/ngrok http 5000
+WorkingDirectory=/home/fcp1
 Restart=always
-User=pi
+User=fcp1
 
 [Install]
 WantedBy=multi-user.target

@@ -3,10 +3,10 @@ Description=Arduino Web UI
 After=network.target
 
 [Service]
-WorkingDirectory=/workspaces/Cristi_RPI5-arduino-http/rpi5
-ExecStart=/usr/bin/python3 /workspaces/Cristi_RPI5-arduino-http/rpi5/web_server.py
+WorkingDirectory=/home/fcp1/Cristi_RPI5-arduino-http/rpi5
+ExecStart=/usr/bin/python3 /home/fcp1/Cristi_RPI5-arduino-http/rpi5/web_server.py
 Restart=always
-User=pi
+User=fcp1
 Environment=FLASK_SECRET_KEY=changeme
 
 [Install]
