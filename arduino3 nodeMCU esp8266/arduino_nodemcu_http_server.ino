@@ -38,14 +38,14 @@ void handleRoot() {
 // Function to toggle channel 1
 void toggleChannel1() {
   channel1Status = !channel1Status;
-  digitalWrite(relay1Pin, channel1Status ? HIGH : LOW);
+  digitalWrite(relay1Pin, channel1Status ? LOW : HIGH); // active LOW
   server.send(200, "text/plain", channel1Status ? "Channel 1 ON" : "Channel 1 OFF");
 }
 
 // Function to toggle channel 2
 void toggleChannel2() {
   channel2Status = !channel2Status;
-  digitalWrite(relay2Pin, channel2Status ? HIGH : LOW);
+  digitalWrite(relay2Pin, channel2Status ? LOW : HIGH); // active LOW
   server.send(200, "text/plain", channel2Status ? "Channel 2 ON" : "Channel 2 OFF");
 }
 
@@ -82,31 +82,31 @@ void toggleBuiltinLed() {
   server.send(200, "application/json", response);
 }
 
-// Function to turn Relay 1 (D0) ON
+// Function to turn Relay 1 (D0) ON (active LOW boards)
 void turnRelay1On() {
   channel1Status = true;
-  digitalWrite(relay1Pin, HIGH);
+  digitalWrite(relay1Pin, LOW); // LOW = energized on many ESP8266 relay boards
   server.send(200, "application/json", "{\"status\":\"Relay 1 turned ON\"}");
 }
 
-// Function to turn Relay 1 (D0) OFF
+// Function to turn Relay 1 (D0) OFF (active LOW boards)
 void turnRelay1Off() {
   channel1Status = false;
-  digitalWrite(relay1Pin, LOW);
+  digitalWrite(relay1Pin, HIGH); // HIGH = de-energized
   server.send(200, "application/json", "{\"status\":\"Relay 1 turned OFF\"}");
 }
 
-// Function to turn Relay 2 (D1) ON
+// Function to turn Relay 2 (D1) ON (active LOW boards)
 void turnRelay2On() {
   channel2Status = true;
-  digitalWrite(relay2Pin, HIGH);
+  digitalWrite(relay2Pin, LOW);
   server.send(200, "application/json", "{\"status\":\"Relay 2 turned ON\"}");
 }
 
-// Function to turn Relay 2 (D1) OFF
+// Function to turn Relay 2 (D1) OFF (active LOW boards)
 void turnRelay2Off() {
   channel2Status = false;
-  digitalWrite(relay2Pin, LOW);
+  digitalWrite(relay2Pin, HIGH);
   server.send(200, "application/json", "{\"status\":\"Relay 2 turned OFF\"}");
 }
 
@@ -146,11 +146,13 @@ void setup() {
   // Print the IP address
   Serial.println(WiFi.localIP());
 
-  // Initialize relay pins
+  // Initialize relay pins (set to OFF for active LOW boards)
   pinMode(relay1Pin, OUTPUT);
   pinMode(relay2Pin, OUTPUT);
-  digitalWrite(relay1Pin, LOW);
-  digitalWrite(relay2Pin, LOW);
+  digitalWrite(relay1Pin, HIGH);
+  digitalWrite(relay2Pin, HIGH);
+  channel1Status = false;
+  channel2Status = false;
 
   // Initialize built-in LED
   pinMode(LED_BUILTIN, OUTPUT);
